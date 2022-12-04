@@ -31,11 +31,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
+
 
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -160,9 +164,15 @@ public class GiraffeCameraAuto extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    private Servo   rightServo = null;
+    private Servo   leftServo = null;
+
     private static float MAX_POWER = 0.5F;
     private static float SLOW_POWER = 0.3F;
     private static float TARGET_Y_POS = -11.0F;
+
+    static double  MIN_POSITION = 0, MAX_POSITION = 1;
+
 
     @Override
     public void runOpMode() {
@@ -204,6 +214,9 @@ public class GiraffeCameraAuto extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "TopRight");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BottomRight");
 
+        rightServo = hardwareMap.servo.get("right_servo");
+        leftServo = hardwareMap.servo.get("left_servo");
+
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -219,6 +232,7 @@ public class GiraffeCameraAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
+            // test the motor directions then remove this code
             goForward(500);
             goRight(500);
             goLeft(500);
@@ -356,6 +370,7 @@ public class GiraffeCameraAuto extends LinearOpMode {
 
         targets.activate();
 
+        double servoPos = MIN_POSITION;
         while(!targetVisible){
 
             // check all the trackable targets to see which one (if any) is visible.
@@ -398,6 +413,13 @@ public class GiraffeCameraAuto extends LinearOpMode {
                 }
             }
 
+            // Move robot and the camera - right or left
+            // set servo to += -.01;
+            // move arm down on A button if not already at lowest position.
+            if (servoPos < MAX_POSITION) servoPos += .01;
+            rightServo.setPosition(Range.clip(servoPos, MIN_POSITION, MAX_POSITION));
+            goForwardSlow();
+
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
                 // express position (translation) of robot in inches.
@@ -413,6 +435,7 @@ public class GiraffeCameraAuto extends LinearOpMode {
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
             }
             else {
+                stopMotors();
                 telemetry.addData("Visible Target", "none");
             }
             telemetry.update();
@@ -450,9 +473,6 @@ public class GiraffeCameraAuto extends LinearOpMode {
 
         // Turn off Extended tracking.  Set this true if you want Vuforia to track beyond the target.
         parameters.useExtendedTracking = false;
-
-
-
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
@@ -567,4 +587,9 @@ public class GiraffeCameraAuto extends LinearOpMode {
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);}
+
+    private void moveRightCamera() {
+
+    }
+
 }
