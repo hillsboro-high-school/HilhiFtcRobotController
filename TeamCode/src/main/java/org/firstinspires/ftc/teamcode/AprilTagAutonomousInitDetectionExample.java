@@ -51,9 +51,12 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     double cy = 221.506;
 
     // UNITS ARE METERS
-    double tagsize = 0.166;
+    double tagsize = 0.048;
 
-    int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
+    // THree tags from the 36h11 family
+    int LEFT = 0;
+    int MIDDLE = 1;
+    int RIGHT = 2;
 
     AprilTagDetection tagOfInterest = null;
 
@@ -70,7 +73,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             @Override
             public void onOpened()
             {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(800,448, OpenCvCameraRotation.SIDEWAYS_LEFT);
             }
 
             @Override
@@ -96,8 +99,14 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
                 for(AprilTagDetection tag : currentDetections)
                 {
-                    if(tag.id == ID_TAG_OF_INTEREST)
+                   // telemetry.addData("Tag:", tag.id);
+                    // telemetry.update();
+
+                    if(tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT)
                     {
+                        //telemetry.addData("Tag:", tag.id);
+                        //telemetry.update();
+                        sleep(1000);
                         tagOfInterest = tag;
                         tagFound = true;
                         break;
@@ -164,32 +173,29 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         }
 
         /* Actually do something useful */
-        if(tagOfInterest == null)
+        if(tagOfInterest == null || tagOfInterest.id == MIDDLE)
         {
             /*
-             * Insert your autonomous code here, presumably running some default configuration
-             * since the tag was never sighted during INIT
+             * Do MIDDLE code because tag was not seen so why not guess?
              */
+
+
         }
         else
         {
             /*
-             * Insert your autonomous code here, probably using the tag pose to decide your configuration.
+             * Handle LEFT
              */
+            if (tagOfInterest.id == LEFT) {
 
-            // e.g.
-            if(tagOfInterest.pose.x <= 20)
-            {
-                // do something
             }
-            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
-            {
-                // do something else
+            /*
+             * Handle RIGHT
+             */
+            else {
+
             }
-            else if(tagOfInterest.pose.x >= 50)
-            {
-                // do something else
-            }
+
         }
 
 
