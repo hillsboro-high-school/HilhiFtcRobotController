@@ -234,9 +234,13 @@ public class GiraffeCameraAuto extends LinearOpMode {
         if (opModeIsActive()) {
             // test the motor directions then remove this code
             goForward(500);
+            sleep(500);
             goRight(500);
+            sleep(500);
             goLeft(500);
+            sleep(500);
             goBackward(500);
+            sleep(500);
 
             //Part 1: identify signal
             if (tfod != null) {
