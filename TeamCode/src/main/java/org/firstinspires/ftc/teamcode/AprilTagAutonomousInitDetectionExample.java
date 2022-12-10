@@ -113,17 +113,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
-            leftFrontDrive.setPower(.5);
-            rightFrontDrive.setPower(.5);
-            leftBackDrive.setPower(-.5);
-            rightBackDrive.setPower(.5);
 
-            sleep(1000);
-
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
 
 
 
@@ -206,6 +196,17 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             telemetry.update();
         }
 
+        leftFrontDrive.setPower(.5);
+        rightFrontDrive.setPower(.5);
+        leftBackDrive.setPower(-.5);
+        rightBackDrive.setPower(.5);
+
+        sleep(1000);
+
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightFrontDrive.setPower(0);
 
 
         if(tagOfInterest.id == MIDDLE || tagOfInterest.id == LEFT || tagOfInterest.id == RIGHT){
