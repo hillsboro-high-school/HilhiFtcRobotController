@@ -105,17 +105,26 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
-        /*
-         * The INIT-loop:
-         * This REPLACES waitForStart!
-         */
-        while (!isStarted() && !isStopRequested())
-        {
+
+        waitForStart();
+        //go left a bit
+        leftFrontDrive.setPower(-.5);//LEFT CODE
+        rightFrontDrive.setPower(.5);
+        leftBackDrive.setPower(.5);
+        rightBackDrive.setPower(-.5);
+
+        sleep(250);
+
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+
+        sleep(1000);
+
+        double startTime = runtime.milliseconds();
+        while (runtime.milliseconds() - startTime > 5000) { // time to check for in ms
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-
-
-
-
 
             if(currentDetections.size() != 0)
             {
@@ -123,7 +132,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
                 for(AprilTagDetection tag : currentDetections)
                 {
-                   // telemetry.addData("Tag:", tag.id);
+                    // telemetry.addData("Tag:", tag.id);
                     // telemetry.update();
 
                     if(tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT)
@@ -178,11 +187,6 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             sleep(20);
         }
 
-        /*
-         * The START command just came in: now work off the latest snapshot acquired
-         * during the init loop.
-         */
-
         /* Update the telemetry */
         if(tagOfInterest != null)
         {
@@ -196,113 +200,116 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             telemetry.update();
         }
 
-        leftFrontDrive.setPower(.5);
-        rightFrontDrive.setPower(.5);
-        leftBackDrive.setPower(-.5);
-        rightBackDrive.setPower(.5);
 
-        sleep(1000);
-
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-
-
-        if(tagOfInterest.id == MIDDLE || tagOfInterest.id == LEFT || tagOfInterest.id == RIGHT){
-
-            leftFrontDrive.setPower(-.5);
-            rightFrontDrive.setPower(-.5);
-            leftBackDrive.setPower(.5);
-            rightFrontDrive.setPower(-.5);
-
-            sleep(1000);
-
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-
-        }
-        /* Actually do something useful */
-        if(tagOfInterest.id == MIDDLE)
+        if(tagOfInterest != null)
         {
-            /*
-             * Do MIDDLE code because tag was not seen so why not guess? 2
-             */
-            sleep(1200);
-
-            leftFrontDrive.setPower(.5);
-            rightFrontDrive.setPower(.5);
-            leftBackDrive.setPower(.5);
-            rightBackDrive.setPower(.5);
-
-            sleep(1000);
-
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-
-        }
-        else
-        {
-            /*
-             * Handle LEFT 1
-             */
-            if (tagOfInterest.id == LEFT) {
-
-                sleep(1200);
-
-                leftFrontDrive.setPower(.5);
-                rightFrontDrive.setPower(.5);
-                leftBackDrive.setPower(.5);
-                rightBackDrive.setPower(.5);
-
-                sleep(1000);
-
-                leftFrontDrive.setPower(-.5);//LEFT CODE
-                rightFrontDrive.setPower(.5);
-                leftBackDrive.setPower(.5);
-                rightBackDrive.setPower(-.5);
-
-                sleep(1350);
-
-                leftFrontDrive.setPower(0);
-                rightFrontDrive.setPower(0);
-                leftBackDrive.setPower(0);
-                rightBackDrive.setPower(0);
-            }
-            /*
-             * Handle RIGHT 3
-             */
-            else {
-
-                sleep(1200);
-
-                leftFrontDrive.setPower(.5);
-                rightFrontDrive.setPower(.5);
-                leftBackDrive.setPower(.5);
-                rightBackDrive.setPower(.5);
-
-                sleep(1000);
-
+            if (tagOfInterest.id == MIDDLE || tagOfInterest.id == LEFT || tagOfInterest.id == RIGHT) {
                 leftFrontDrive.setPower(0.5);//RIGHT CODE
                 rightFrontDrive.setPower(-0.5);
                 leftBackDrive.setPower(-0.5);
                 rightBackDrive.setPower(0.5);
 
-                sleep(1350);
+                sleep(250);
+
+                leftFrontDrive.setPower(0);
+                rightFrontDrive.setPower(0);
+                leftBackDrive.setPower(0);
+                rightFrontDrive.setPower(0);
+            }
+            /* Actually do something useful */
+            if(tagOfInterest.id == MIDDLE)
+            {
+                /*
+                 * Do MIDDLE code because tag was not seen so why not guess? 2
+                 */
+                sleep(500);
+
+                leftFrontDrive.setPower(.5);
+                rightFrontDrive.setPower(.5);
+                leftBackDrive.setPower(.5);
+                rightBackDrive.setPower(.5);
+
+                sleep(1000);
 
                 leftFrontDrive.setPower(0);
                 rightFrontDrive.setPower(0);
                 leftBackDrive.setPower(0);
                 rightBackDrive.setPower(0);
-            }
 
+
+            }
+            else
+            {
+                /*
+                 * Handle LEFT 1
+                 */
+                if (tagOfInterest.id == LEFT) {
+
+                    sleep(500);
+
+                    leftFrontDrive.setPower(.5);
+                    rightFrontDrive.setPower(.5);
+                    leftBackDrive.setPower(.5);
+                    rightBackDrive.setPower(.5);
+
+                    sleep(1000);
+
+                    leftFrontDrive.setPower(-.5);//LEFT CODE
+                    rightFrontDrive.setPower(.5);
+                    leftBackDrive.setPower(.5);
+                    rightBackDrive.setPower(-.5);
+
+                    sleep(1350);
+
+                    leftFrontDrive.setPower(0);
+                    rightFrontDrive.setPower(0);
+                    leftBackDrive.setPower(0);
+                    rightBackDrive.setPower(0);
+                }
+                /*
+                 * Handle RIGHT 3
+                 */
+                else {
+
+                    sleep(500);
+
+                    leftFrontDrive.setPower(.5);
+                    rightFrontDrive.setPower(.5);
+                    leftBackDrive.setPower(.5);
+                    rightBackDrive.setPower(.5);
+
+                    sleep(1000);
+
+                    leftFrontDrive.setPower(0.5);//RIGHT CODE
+                    rightFrontDrive.setPower(-0.5);
+                    leftBackDrive.setPower(-0.5);
+                    rightBackDrive.setPower(0.5);
+
+                    sleep(1350);
+
+                    leftFrontDrive.setPower(0);
+                    rightFrontDrive.setPower(0);
+                    leftBackDrive.setPower(0);
+                    rightBackDrive.setPower(0);
+                }
+
+            }
+        } else {
+            // didnt see tag
+            leftFrontDrive.setPower(0.5);//RIGHT CODE
+            rightFrontDrive.setPower(-0.5);
+            leftBackDrive.setPower(-0.5);
+            rightBackDrive.setPower(0.5);
+
+            sleep(250);
+
+            leftFrontDrive.setPower(.5);
+            rightFrontDrive.setPower(.5);
+            leftBackDrive.setPower(.5);
+            rightBackDrive.setPower(.5);
         }
 
+        // by now we may or may not have seen the tag, do whatever else you need
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         while (opModeIsActive()) {sleep(20);}
