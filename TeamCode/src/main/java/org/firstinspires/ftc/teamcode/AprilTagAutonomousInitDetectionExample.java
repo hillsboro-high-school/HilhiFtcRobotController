@@ -47,13 +47,14 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
+    // Our camera is Logitech c920
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
 
     // UNITS ARE METERS
-    double tagsize = 0.025;
+    double tagsize = 0.045;
 
     // THree tags from the 36h11 family
     int LEFT = 0;
@@ -92,8 +93,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             @Override
             public void onOpened()
             {
-                camera.startStreaming(800,448, OpenCvCameraRotation.SIDEWAYS_LEFT);
-            }
+                camera.startStreaming(1280,720, OpenCvCameraRotation.SIDEWAYS_LEFT);
+            }// DEBUG was 800x448
 
             @Override
             public void onError(int errorCode)
@@ -111,6 +112,20 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+
+            leftFrontDrive.setPower(.5);
+            rightFrontDrive.setPower(.5);
+            leftBackDrive.setPower(-.5);
+            rightBackDrive.setPower(.5);
+
+            sleep(1000);
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+
+
 
             if(currentDetections.size() != 0)
             {
@@ -191,12 +206,30 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             telemetry.update();
         }
 
+
+
+        if(tagOfInterest.id == MIDDLE || tagOfInterest.id == LEFT || tagOfInterest.id == RIGHT){
+
+            leftFrontDrive.setPower(-.5);
+            rightFrontDrive.setPower(-.5);
+            leftBackDrive.setPower(.5);
+            rightFrontDrive.setPower(-.5);
+
+            sleep(1000);
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+
+        }
         /* Actually do something useful */
-        if(tagOfInterest == null || tagOfInterest.id == MIDDLE)
+        if(tagOfInterest.id == MIDDLE)
         {
             /*
              * Do MIDDLE code because tag was not seen so why not guess? 2
              */
+            sleep(1200);
 
             leftFrontDrive.setPower(.5);
             rightFrontDrive.setPower(.5);
@@ -218,6 +251,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
              * Handle LEFT 1
              */
             if (tagOfInterest.id == LEFT) {
+
+                sleep(1200);
 
                 leftFrontDrive.setPower(.5);
                 rightFrontDrive.setPower(.5);
@@ -242,6 +277,9 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
              * Handle RIGHT 3
              */
             else {
+
+                sleep(1200);
+
                 leftFrontDrive.setPower(.5);
                 rightFrontDrive.setPower(.5);
                 leftBackDrive.setPower(.5);
