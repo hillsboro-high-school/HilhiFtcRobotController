@@ -23,6 +23,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
@@ -60,9 +62,26 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
+    // Declare OpMode members for each of the 4 motors.
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
+
     @Override
     public void runOpMode()
     {
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "TopLeft");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "BottomLeft");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "TopRight");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "BottomRight");
+
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -176,24 +195,71 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         if(tagOfInterest == null || tagOfInterest.id == MIDDLE)
         {
             /*
-             * Do MIDDLE code because tag was not seen so why not guess?
+             * Do MIDDLE code because tag was not seen so why not guess? 2
              */
+
+            leftFrontDrive.setPower(.5);
+            rightFrontDrive.setPower(.5);
+            leftBackDrive.setPower(.5);
+            rightBackDrive.setPower(.5);
+
+            sleep(1000);
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
 
 
         }
         else
         {
             /*
-             * Handle LEFT
+             * Handle LEFT 1
              */
             if (tagOfInterest.id == LEFT) {
 
+                leftFrontDrive.setPower(.5);
+                rightFrontDrive.setPower(.5);
+                leftBackDrive.setPower(.5);
+                rightBackDrive.setPower(.5);
+
+                sleep(1000);
+
+                leftFrontDrive.setPower(-.5);//LEFT CODE
+                rightFrontDrive.setPower(.5);
+                leftBackDrive.setPower(.5);
+                rightBackDrive.setPower(-.5);
+
+                sleep(1350);
+
+                leftFrontDrive.setPower(0);
+                rightFrontDrive.setPower(0);
+                leftBackDrive.setPower(0);
+                rightBackDrive.setPower(0);
             }
             /*
-             * Handle RIGHT
+             * Handle RIGHT 3
              */
             else {
+                leftFrontDrive.setPower(.5);
+                rightFrontDrive.setPower(.5);
+                leftBackDrive.setPower(.5);
+                rightBackDrive.setPower(.5);
 
+                sleep(1000);
+
+                leftFrontDrive.setPower(0.5);//RIGHT CODE
+                rightFrontDrive.setPower(-0.5);
+                leftBackDrive.setPower(-0.5);
+                rightBackDrive.setPower(0.5);
+
+                sleep(1350);
+
+                leftFrontDrive.setPower(0);
+                rightFrontDrive.setPower(0);
+                leftBackDrive.setPower(0);
+                rightBackDrive.setPower(0);
             }
 
         }
