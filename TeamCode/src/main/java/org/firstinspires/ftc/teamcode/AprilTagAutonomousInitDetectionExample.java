@@ -112,7 +112,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
                         break;
                     }
                 }
-
+//1
                 if(tagFound)
                 {
                     telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
