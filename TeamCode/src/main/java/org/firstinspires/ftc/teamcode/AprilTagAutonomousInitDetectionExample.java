@@ -4,7 +4,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
@@ -42,25 +51,63 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
+    BNO055IMU               imu;
+    Orientation             lastAngles = new Orientation();
+    double                  globalAngle, power = 0.5;
+
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
+    private DcMotorEx leftFrontDrive = null;
+    private DcMotorEx leftBackDrive = null;
+    private DcMotorEx rightFrontDrive = null;
+    private DcMotorEx rightBackDrive = null;
 
     @Override
     public void runOpMode()
     {
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "TopLeft");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "BottomLeft");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "TopRight");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "BottomRight");
+        leftFrontDrive  = hardwareMap.get(DcMotorEx.class, "TopLeft");
+        leftBackDrive  = hardwareMap.get(DcMotorEx.class, "BottomLeft");
+        rightFrontDrive = hardwareMap.get(DcMotorEx.class, "TopRight");
+        rightBackDrive = hardwareMap.get(DcMotorEx.class, "BottomRight");
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
+
+        leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        imu.initialize(parameters);
+
+        telemetry.addData("Mode", "calibrating...");
+        telemetry.update();
+
+        // make sure the imu gyro is calibrated before continuing.
+        while (!isStopRequested() && !imu.isGyroCalibrated())
+        {
+            sleep(50);
+            idle();
+        }
+
+        telemetry.addData("Mode", "waiting for start");
+        telemetry.addData("imu calib status", imu.getCalibrationStatus().toString());
+        telemetry.update();
+
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -145,111 +192,56 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         /* Actually do something useful */
         if(tagOfInterest == null || tagOfInterest.id == MIDDLE)
         {
+            rotate(90,power);//still requires a sleep
+            sleep(350);
 
-            //  Do MIDDLE code because tag was not seen so why not guess? 2
+            rest();
 
-            leftFrontDrive.setPower(0.5);//turn RIGHT since robot is sideways
-            rightFrontDrive.setPower(-0.5);
-            leftBackDrive.setPower(0.5);
-            rightBackDrive.setPower(-0.5);
-
-            sleep(1000);
-
-            leftFrontDrive.setPower(.5);
-            rightFrontDrive.setPower(.5);
-            leftBackDrive.setPower(.5);
-            rightBackDrive.setPower(.5);
+            straight();
 
             sleep(1000);
 
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-            sleep(100);
-
+            rest();
         }
-        //else
-        //{
         /*
          * Handle LEFT 1
          */
         if (tagOfInterest.id == LEFT) {
 
-            leftFrontDrive.setPower(0.5);//turn RIGHT since robot is sideways
-            rightFrontDrive.setPower(-0.5);
-            leftBackDrive.setPower(0.5);
-            rightBackDrive.setPower(-0.5);
+            rotate(90,power);//still requires a sleep
+            sleep(350);
 
-            sleep(1100);
+            rest();
 
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-            sleep(100);
-
-            leftFrontDrive.setPower(.5);
-            rightFrontDrive.setPower(.5);
-            leftBackDrive.setPower(.5);
-            rightBackDrive.setPower(.5);
-
+            straight();
             sleep(1000);
 
-            leftFrontDrive.setPower(-.5);//LEFT CODE
-            rightFrontDrive.setPower(.5);
-            leftBackDrive.setPower(.5);
-            rightBackDrive.setPower(-.5);
+            rest();
 
-            sleep(1350);
+            sleft();
+            sleep(1000);
 
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(0);
-            sleep(100);
+            rest();
         }
         /*
          * Handle RIGHT 3
          */
         if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
 
-            leftFrontDrive.setPower(0.5);//turn RIGHT since robot is sideways
-            rightFrontDrive.setPower(-0.5);
-            leftBackDrive.setPower(0.5);
-            rightBackDrive.setPower(-0.5);
+            rotate(90,power);//still requires a sleep
+            sleep(350);
 
-            sleep(1100);
+            rest();
 
-
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-            sleep(100);
-
-            leftFrontDrive.setPower(.5);
-            rightFrontDrive.setPower(.5);//goes STRAIGHT
-            leftBackDrive.setPower(.5);
-            rightBackDrive.setPower(.5);
-
+            straight();
             sleep(1000);
 
-            leftFrontDrive.setPower(0.5);//RIGHT CODE
-            rightFrontDrive.setPower(-0.5);
-            leftBackDrive.setPower(-0.5);
-            rightBackDrive.setPower(0.5);
+            rest();
 
+            sright();
             sleep(1000);
 
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(0);
-            sleep(100);
+            rest();
         }
 
         //}
@@ -257,6 +249,91 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         while (opModeIsActive()) {sleep(20);}
+    }
+
+
+    private void resetAngle()
+    {
+        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalAngle = 0;
+    }
+
+    /**
+     * Get current cumulative angle rotation from last reset.
+     * @return Angle in degrees. + = left, - = right.
+     */
+    private double getAngle()
+    {
+
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
+    }
+
+    private void rotate(int degrees,double power)
+    {
+        // restart imu movement tracking.
+        resetAngle();
+
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
+
+        if (degrees < 0)//turn left
+        {
+            leftFrontDrive.setPower(-power);
+            rightFrontDrive.setPower(power);
+            leftBackDrive.setPower(-power);
+            rightBackDrive.setPower(power);
+        }
+        else if (degrees > 0)//turn right
+        {
+            leftFrontDrive.setPower(power);
+            rightFrontDrive.setPower(-power);
+            leftBackDrive.setPower(power);
+            rightBackDrive.setPower(-power);
+        }
+        else return;
+
+        // set power to rotate.
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);//goes STRAIGHT
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
+
+        // rotate until turn is completed.
+        if (degrees < 0)
+        {
+            // On right turn we have to get off zero first.
+            while (opModeIsActive() && getAngle() == 0) {}
+
+            while (opModeIsActive() && getAngle() > degrees) {}
+        }
+        else    // left turn.
+            while (opModeIsActive() && getAngle() < degrees) {}
+
+        // turn the motors off.
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+
+        // wait for rotation to stop.
+        sleep(1000);
+
+        // reset angle tracking on new heading.
+        resetAngle();
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -269,6 +346,59 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+
+    public void straight(){
+            leftFrontDrive.setPower(power);
+            rightFrontDrive.setPower(power);//goes STRAIGHT
+            leftBackDrive.setPower(power);
+            rightBackDrive.setPower(power);
+        sleep(100);
+    }
+
+    public void backwards(){
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(-power);//goes backwards
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(-power);
+        sleep(100);
+    }
+    public void tleft(){
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(-power);
+    }
+    public void tright(){
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(power);
+        sleep(100);
+    }
+    public void sright(){
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(power);
+        sleep(100);
+    }
+    public void sleft(){
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(-power);
+        sleep(100);
+    }
+    public void rest(){
+        leftFrontDrive.setPower(0.0);
+        rightFrontDrive.setPower(0.0);
+        leftBackDrive.setPower(0.0);
+        rightBackDrive.setPower(0.0);
+        sleep(100);
+    }
+
+
+
 }
 
 
