@@ -1,26 +1,6 @@
-/*
- * Copyright (c) 2021 OpenFTC Team
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 package org.firstinspires.ftc.teamcode;
-
+//change
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -47,14 +27,13 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
-    // Our camera is Logitech c920
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
 
     // UNITS ARE METERS
-    double tagsize = 0.045;
+    double tagsize = 0.025;
 
     // THree tags from the 36h11 family
     int LEFT = 0;
@@ -93,8 +72,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             @Override
             public void onOpened()
             {
-                camera.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
-            }// DEBUG was 800x448
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPSIDE_DOWN);
+            }
 
             @Override
             public void onError(int errorCode)
@@ -105,25 +84,12 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
-
-        waitForStart();
-        //go left a bit
-        leftFrontDrive.setPower(-.5);//LEFT CODE
-        rightFrontDrive.setPower(.5);
-        leftBackDrive.setPower(.5);
-        rightBackDrive.setPower(-.5);
-
-        sleep(250);
-
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightBackDrive.setPower(0);
-
-        sleep(1000);
-
-        double startTime = runtime.milliseconds();
-        while (runtime.milliseconds() - startTime > 5000) { // time to check for in ms
+        /*
+         * The INIT-loop:
+         * This REPLACES waitForStart!
+         */
+        while (!isStarted() && !isStopRequested())
+        {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             if(currentDetections.size() != 0)
@@ -137,9 +103,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
                     if(tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT)
                     {
-                        //telemetry.addData("Tag:", tag.id);
-                        //telemetry.update();
-                        sleep(1000);
+                        telemetry.addData("Tag:", tag.id +1);
+                        // telemetry.update();
+                        //
+                        // sleep(1000);
                         tagOfInterest = tag;
                         tagFound = true;
                         break;
@@ -154,31 +121,6 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
                 else
                 {
                     telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-
-            }
-            else
-            {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
                 }
 
             }
@@ -187,7 +129,6 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             sleep(20);
         }
 
-        /* Update the telemetry */
         if(tagOfInterest != null)
         {
             telemetry.addLine("Tag snapshot:\n");
@@ -200,116 +141,119 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             telemetry.update();
         }
 
-
-        if(tagOfInterest != null)
+        waitForStart();
+        /* Actually do something useful */
+        if(tagOfInterest == null || tagOfInterest.id == MIDDLE)
         {
-            if (tagOfInterest.id == MIDDLE || tagOfInterest.id == LEFT || tagOfInterest.id == RIGHT) {
-                leftFrontDrive.setPower(0.5);//RIGHT CODE
-                rightFrontDrive.setPower(-0.5);
-                leftBackDrive.setPower(-0.5);
-                rightBackDrive.setPower(0.5);
 
-                sleep(250);
+            //  Do MIDDLE code because tag was not seen so why not guess? 2
 
-                leftFrontDrive.setPower(0);
-                rightFrontDrive.setPower(0);
-                leftBackDrive.setPower(0);
-                rightFrontDrive.setPower(0);
-            }
-            /* Actually do something useful */
-            if(tagOfInterest.id == MIDDLE)
-            {
-                /*
-                 * Do MIDDLE code because tag was not seen so why not guess? 2
-                 */
-                sleep(500);
-
-                leftFrontDrive.setPower(.5);
-                rightFrontDrive.setPower(.5);
-                leftBackDrive.setPower(.5);
-                rightBackDrive.setPower(.5);
-
-                sleep(1000);
-
-                leftFrontDrive.setPower(0);
-                rightFrontDrive.setPower(0);
-                leftBackDrive.setPower(0);
-                rightBackDrive.setPower(0);
-
-
-            }
-            else
-            {
-                /*
-                 * Handle LEFT 1
-                 */
-                if (tagOfInterest.id == LEFT) {
-
-                    sleep(500);
-
-                    leftFrontDrive.setPower(.5);
-                    rightFrontDrive.setPower(.5);
-                    leftBackDrive.setPower(.5);
-                    rightBackDrive.setPower(.5);
-
-                    sleep(1000);
-
-                    leftFrontDrive.setPower(-.5);//LEFT CODE
-                    rightFrontDrive.setPower(.5);
-                    leftBackDrive.setPower(.5);
-                    rightBackDrive.setPower(-.5);
-
-                    sleep(1350);
-
-                    leftFrontDrive.setPower(0);
-                    rightFrontDrive.setPower(0);
-                    leftBackDrive.setPower(0);
-                    rightBackDrive.setPower(0);
-                }
-                /*
-                 * Handle RIGHT 3
-                 */
-                else {
-
-                    sleep(500);
-
-                    leftFrontDrive.setPower(.5);
-                    rightFrontDrive.setPower(.5);
-                    leftBackDrive.setPower(.5);
-                    rightBackDrive.setPower(.5);
-
-                    sleep(1000);
-
-                    leftFrontDrive.setPower(0.5);//RIGHT CODE
-                    rightFrontDrive.setPower(-0.5);
-                    leftBackDrive.setPower(-0.5);
-                    rightBackDrive.setPower(0.5);
-
-                    sleep(1350);
-
-                    leftFrontDrive.setPower(0);
-                    rightFrontDrive.setPower(0);
-                    leftBackDrive.setPower(0);
-                    rightBackDrive.setPower(0);
-                }
-
-            }
-        } else {
-            // didnt see tag
-            leftFrontDrive.setPower(0.5);//RIGHT CODE
+            leftFrontDrive.setPower(0.5);//turn RIGHT since robot is sideways
             rightFrontDrive.setPower(-0.5);
-            leftBackDrive.setPower(-0.5);
-            rightBackDrive.setPower(0.5);
+            leftBackDrive.setPower(0.5);
+            rightBackDrive.setPower(-0.5);
 
-            sleep(250);
+            sleep(1000);
 
             leftFrontDrive.setPower(.5);
             rightFrontDrive.setPower(.5);
             leftBackDrive.setPower(.5);
             rightBackDrive.setPower(.5);
+
+            sleep(1000);
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            sleep(100);
+
+        }
+        //else
+        //{
+        /*
+         * Handle LEFT 1
+         */
+        if (tagOfInterest.id == LEFT) {
+
+            leftFrontDrive.setPower(0.5);//turn RIGHT since robot is sideways
+            rightFrontDrive.setPower(-0.5);
+            leftBackDrive.setPower(0.5);
+            rightBackDrive.setPower(-0.5);
+
+            sleep(1100);
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            sleep(100);
+
+            leftFrontDrive.setPower(.5);
+            rightFrontDrive.setPower(.5);
+            leftBackDrive.setPower(.5);
+            rightBackDrive.setPower(.5);
+
+            sleep(1000);
+
+            leftFrontDrive.setPower(-.5);//LEFT CODE
+            rightFrontDrive.setPower(.5);
+            leftBackDrive.setPower(.5);
+            rightBackDrive.setPower(-.5);
+
+            sleep(1350);
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
+            sleep(100);
+        }
+        /*
+         * Handle RIGHT 3
+         */
+        if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
+
+            leftFrontDrive.setPower(0.5);//turn RIGHT since robot is sideways
+            rightFrontDrive.setPower(-0.5);
+            leftBackDrive.setPower(0.5);
+            rightBackDrive.setPower(-0.5);
+
+            sleep(1100);
+
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            sleep(100);
+
+            leftFrontDrive.setPower(.5);
+            rightFrontDrive.setPower(.5);//goes STRAIGHT
+            leftBackDrive.setPower(.5);
+            rightBackDrive.setPower(.5);
+
+            sleep(1000);
+
+            leftFrontDrive.setPower(0.5);//RIGHT CODE
+            rightFrontDrive.setPower(-0.5);
+            leftBackDrive.setPower(-0.5);
+            rightBackDrive.setPower(0.5);
+
+            sleep(1000);
+
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
+            sleep(100);
         }
 
-        // by now we may or may not have seen the tag, do whatever else you need
+        //}
+
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         while (opModeIsActive()) {sleep(20);}
@@ -326,4 +270,5 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
+
 
