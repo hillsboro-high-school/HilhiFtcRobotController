@@ -307,10 +307,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         else return;
 
         // set power to rotate.
-        leftFrontDrive.setPower(power);
+        /*leftFrontDrive.setPower(power);
         rightFrontDrive.setPower(power);//goes STRAIGHT
         leftBackDrive.setPower(power);
-        rightBackDrive.setPower(power);
+        rightBackDrive.setPower(power);*/
 
         // rotate until turn is completed.
         if (degrees < 0)
