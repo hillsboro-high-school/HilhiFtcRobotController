@@ -25,8 +25,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.util.ArrayList;
 
 @Autonomous
-public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
-{
+public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -51,9 +50,9 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
-    BNO055IMU               imu;
-    Orientation             lastAngles = new Orientation();
-    double                  globalAngle, power = 0.5;
+    BNO055IMU imu;
+    Orientation lastAngles = new Orientation();
+    double globalAngle, power = 0.3;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -63,10 +62,9 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     private DcMotorEx rightBackDrive = null;
 
     @Override
-    public void runOpMode()
-    {
-        leftFrontDrive  = hardwareMap.get(DcMotorEx.class, "TopLeft");
-        leftBackDrive  = hardwareMap.get(DcMotorEx.class, "BottomLeft");
+    public void runOpMode() {
+        leftFrontDrive = hardwareMap.get(DcMotorEx.class, "TopLeft");
+        leftBackDrive = hardwareMap.get(DcMotorEx.class, "BottomLeft");
         rightFrontDrive = hardwareMap.get(DcMotorEx.class, "TopRight");
         rightBackDrive = hardwareMap.get(DcMotorEx.class, "BottomRight");
 
@@ -80,12 +78,13 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -98,8 +97,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         telemetry.update();
 
         // make sure the imu gyro is calibrated before continuing.
-        while (!isStopRequested() && !imu.isGyroCalibrated())
-        {
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();
         }
@@ -114,17 +112,14 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPSIDE_DOWN);
+            public void onOpened() {
+                camera.startStreaming(800, 448, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override
-            public void onError(int errorCode)
-            {
+            public void onError(int errorCode) {
 
             }
         });
@@ -135,22 +130,18 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        while (!isStarted() && !isStopRequested())
-        {
+        while (!isStarted() && !isStopRequested()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
-            if(currentDetections.size() != 0)
-            {
+            if (currentDetections.size() != 0) {
                 boolean tagFound = false;
 
-                for(AprilTagDetection tag : currentDetections)
-                {
+                for (AprilTagDetection tag : currentDetections) {
                     // telemetry.addData("Tag:", tag.id);
                     // telemetry.update();
 
-                    if(tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT)
-                    {
-                        telemetry.addData("Tag:", tag.id +1);
+                    if (tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT) {
+                        telemetry.addData("Tag:", tag.id + 1);
                         // telemetry.update();
                         //
                         // sleep(1000);
@@ -160,13 +151,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
                     }
                 }
 //1
-                if(tagFound)
-                {
+                if (tagFound) {
                     telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                     tagToTelemetry(tagOfInterest);
-                }
-                else
-                {
+                } else {
                     telemetry.addLine("Don't see tag of interest :(");
                 }
 
@@ -176,23 +164,20 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             sleep(20);
         }
 
-        if(tagOfInterest != null)
-        {
+        if (tagOfInterest != null) {
             telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest);
             telemetry.update();
-        }
-        else
-        {
+        } else {
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
         }
 
+
         waitForStart();
         /* Actually do something useful */
-        if(tagOfInterest == null || tagOfInterest.id == MIDDLE)
-        {
-            rotate(90,power);//still requires a sleep
+        if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
+            rotate(90, power);//still requires a sleep and its negative because the control hub is backwards
             sleep(350);
 
             rest();
@@ -207,14 +192,31 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
          * Handle LEFT 1
          */
         if (tagOfInterest.id == LEFT) {
+            telemetry.addData("ANGLE", getAngle());
+            telemetry.update();
 
-            rotate(90,power);//still requires a sleep
+            sleep(500);
+
+            telemetry.addData("Mode", "Turning 90");
+            telemetry.update();
+
+            rotate(90, power);//still requires a sleep
             sleep(350);
+
+            telemetry.addData("Mode", "Done");
+            telemetry.update();
 
             rest();
 
+            telemetry.addData("Mode", "done reseting");
+            telemetry.update();
+            sleep(300);
+
             straight();
             sleep(1000);
+
+            telemetry.addData("Mode", "done forward");
+            telemetry.update();
 
             rest();
 
@@ -228,8 +230,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
          */
         if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
 
-            rotate(90,power);//still requires a sleep
+            rotate(90, power);//still requires a sleep
             sleep(350);
+
+            power = 0.5;
 
             rest();
 
@@ -244,16 +248,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
             rest();
         }
 
-        //}
 
-
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
     }
 
-
-    private void resetAngle()
-    {
+    private void resetAngle() {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
@@ -261,10 +259,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
     /**
      * Get current cumulative angle rotation from last reset.
+     *
      * @return Angle in degrees. + = left, - = right.
      */
-    private double getAngle()
-    {
+    private double getAngle() {
 
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -282,8 +280,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         return globalAngle;
     }
 
-    private void rotate(int degrees,double power)
-    {
+    private void rotate(int degrees, double power) {
+        double LFPower, RFPower, LBPower, RBPower;
         // restart imu movement tracking.
         resetAngle();
 
@@ -292,36 +290,35 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
         if (degrees < 0)//turn left
         {
-            leftFrontDrive.setPower(-power);
-            rightFrontDrive.setPower(power);
-            leftBackDrive.setPower(-power);
-            rightBackDrive.setPower(power);
-        }
-        else if (degrees > 0)//turn right
+            LFPower = -power;
+            RFPower = power;
+            LBPower = -power;
+            RBPower = power;
+        } else if (degrees > 0)//turn right
         {
-            leftFrontDrive.setPower(power);
-            rightFrontDrive.setPower(-power);
-            leftBackDrive.setPower(power);
-            rightBackDrive.setPower(-power);
-        }
-        else return;
+            LFPower = power;
+            RFPower = -power;
+            LBPower = power;
+            RBPower = -power;
+        } else return;
 
-        // set power to rotate.
-        /*leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(power);//goes STRAIGHT
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(power);*/
-
+        leftFrontDrive.setPower(LFPower);
+        rightFrontDrive.setPower(RFPower);
+        leftBackDrive.setPower(LBPower);
+        rightBackDrive.setPower(RBPower);
         // rotate until turn is completed.
-        if (degrees < 0)
-        {
+        if (degrees < 0) {
             // On right turn we have to get off zero first.
-            while (opModeIsActive() && getAngle() == 0) {}
+            while (opModeIsActive() && getAngle() == 0) {
+            }
 
-            while (opModeIsActive() && getAngle() > degrees) {}
-        }
-        else    // left turn.
-            while (opModeIsActive() && getAngle() < degrees) {}
+            while (opModeIsActive() && getAngle() < -degrees) {
+            }
+        } else    // left turn.
+            while (opModeIsActive() && (getAngle() > -degrees)){
+                telemetry.addData("Angle:", getAngle());
+                telemetry.update();
+            }
 
         // turn the motors off.
         leftFrontDrive.setPower(0);
@@ -336,69 +333,69 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         resetAngle();
     }
 
-    void tagToTelemetry(AprilTagDetection detection)
-    {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-    }
 
-    public void straight(){
+        public void straight () {
             leftFrontDrive.setPower(power);
             rightFrontDrive.setPower(power);//goes STRAIGHT
             leftBackDrive.setPower(power);
             rightBackDrive.setPower(power);
-        sleep(100);
-    }
+            sleep(100);
+        }
 
-    public void backwards(){
-        leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(-power);//goes backwards
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(-power);
-        sleep(100);
-    }
-    public void tleft(){
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(-power);
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(-power);
-    }
-    public void tright(){
-        leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(power);
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(power);
-        sleep(100);
-    }
-    public void sright(){
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(-power);
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(power);
-        sleep(100);
-    }
-    public void sleft(){
-        leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(power);
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(-power);
-        sleep(100);
-    }
-    public void rest(){
-        leftFrontDrive.setPower(0.0);
-        rightFrontDrive.setPower(0.0);
-        leftBackDrive.setPower(0.0);
-        rightBackDrive.setPower(0.0);
-        sleep(100);
-    }
+        public void backwards () {
+            leftFrontDrive.setPower(-power);
+            rightFrontDrive.setPower(-power);//goes backwards
+            leftBackDrive.setPower(-power);
+            rightBackDrive.setPower(-power);
+            sleep(100);
+        }
+        public void tleft () {
+            leftFrontDrive.setPower(power);
+            rightFrontDrive.setPower(-power);
+            leftBackDrive.setPower(power);
+            rightBackDrive.setPower(-power);
+        }
+        public void tright () {
+            leftFrontDrive.setPower(-power);
+            rightFrontDrive.setPower(power);
+            leftBackDrive.setPower(-power);
+            rightBackDrive.setPower(power);
+            sleep(100);
+        }
+        public void sright () {
+            leftFrontDrive.setPower(power);
+            rightFrontDrive.setPower(-power);
+            leftBackDrive.setPower(-power);
+            rightBackDrive.setPower(power);
+            sleep(100);
+        }
+        public void sleft () {
+            leftFrontDrive.setPower(-power);
+            rightFrontDrive.setPower(power);
+            leftBackDrive.setPower(power);
+            rightBackDrive.setPower(-power);
+            sleep(100);
+        }
+        public void rest () {
+            leftFrontDrive.setPower(0.0);
+            rightFrontDrive.setPower(0.0);
+            leftBackDrive.setPower(0.0);
+            rightBackDrive.setPower(0.0);
+            sleep(100);
+        }
 
-
-
+    void tagToTelemetry (AprilTagDetection detection)
+    {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
 }
+
+
 
 
