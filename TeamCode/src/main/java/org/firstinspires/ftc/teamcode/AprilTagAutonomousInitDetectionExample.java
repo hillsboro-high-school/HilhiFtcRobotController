@@ -188,14 +188,18 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         waitForStart();
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
-            rotate(90, power);//still requires a sleep and its negative because the control hub is backwards
+
+            sright();
+            sleep(500);
+
+            rotate(90, power*1.22);//still requires a sleep and its negative because the control hub is backwards
             sleep(350);
 
             rest();
 
             straight();
 
-            sleep(1000);
+            sleep(1560);
 
             rest();
         }
@@ -203,15 +207,20 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
          * Handle LEFT 1
          */
         if (tagOfInterest.id == LEFT) {
+
+            sright();
+            sleep(500);
+
             telemetry.addData("ANGLE", getAngle());
             telemetry.update();
 
-            sleep(500);
+            sleep(200);
 
             telemetry.addData("Mode", "Turning 90");
             telemetry.update();
 
-            rotate(90, power);//still requires a sleep
+
+            rotate(90, power*1.22);//still requires a sleep
             sleep(350);
 
             telemetry.addData("Mode", "Done");
@@ -224,7 +233,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(300);
 
             straight();
-            sleep(1000);
+            sleep(1560);
 
             telemetry.addData("Mode", "done forward");
             telemetry.update();
@@ -232,7 +241,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
 
             sleft();
-            sleep(1000);
+            sleep(2023);
 
             rest();
         }
@@ -240,8 +249,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
          * Handle RIGHT 3
          */
         if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
+            sright();
+            sleep(500);
 
-            rotate(90, power);//still requires a sleep
+
+            rotate(90, power*1.22);//still requires a sleep
             sleep(350);
 
             power = 0.5;
@@ -249,12 +261,12 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
 
             straight();
-            sleep(1000);
+            sleep(1560);
 
             rest();
 
             sright();
-            sleep(1000);
+            sleep(2023);
 
             rest();
         }
