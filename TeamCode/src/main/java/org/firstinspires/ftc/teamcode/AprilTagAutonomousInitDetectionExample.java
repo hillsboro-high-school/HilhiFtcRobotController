@@ -56,8 +56,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 0.3;
-
+    double globalAngle, power = 0.45;
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -65,7 +64,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     private DcMotorEx rightFrontDrive = null;
     private DcMotorEx rightBackDrive = null;
     private DcMotor left_lift = null, right_lift =null;
-    private CRServo tweezers = null;
+    private Servo tweezers = null;
 
     @Override
     public void runOpMode() {
@@ -83,7 +82,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
 
         left_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        right_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
+        right_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -207,6 +206,12 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
          * Handle LEFT 1
          */
         if (tagOfInterest.id == LEFT) {
+
+            grabing();
+            sleep(200);
+
+            upM();
+            sleep(1200);
 
             sright();
             sleep(500);
@@ -407,10 +412,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(100);
         }
         public void grabing(){
-            tweezers.setPower(180);
+            tweezers.setPosition(1.0);
         }
         public void droping (){
-        tweezers.setPower(-180);
+        tweezers.setPosition(0.0);
     }
     public void upM(){
 
