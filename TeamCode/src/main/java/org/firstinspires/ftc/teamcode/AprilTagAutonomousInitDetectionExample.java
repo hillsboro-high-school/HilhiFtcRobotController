@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode;
 //change
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.CRServoImpl;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,13 +18,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
+
 
 import java.util.ArrayList;
 
@@ -60,6 +64,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     private DcMotorEx leftBackDrive = null;
     private DcMotorEx rightFrontDrive = null;
     private DcMotorEx rightBackDrive = null;
+    private DcMotor left_lift = null, right_lift =null;
+    private CRServo tweezers = null;
 
     @Override
     public void runOpMode() {
@@ -67,12 +73,17 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotorEx.class, "BottomLeft");
         rightFrontDrive = hardwareMap.get(DcMotorEx.class, "TopRight");
         rightBackDrive = hardwareMap.get(DcMotorEx.class, "BottomRight");
+        left_lift = hardwareMap.get(DcMotor.class, "left_lift_motor");
+        right_lift = hardwareMap.get(DcMotor.class, "right_lift_motor");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotorEx.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
 
+
+        left_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
         leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -383,6 +394,42 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rightBackDrive.setPower(0.0);
             sleep(100);
         }
+        public void grabing(){
+            tweezers.setPower(180);
+        }
+        public void droping (){
+        tweezers.setPower(-180);
+    }
+    public void upM(){
+
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        right_lift.setTargetPosition(1200);
+        left_lift.setTargetPosition(1200);
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+    public void upH(){
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        right_lift.setTargetPosition(2000);
+        left_lift.setTargetPosition(2000);
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+
 
     void tagToTelemetry (AprilTagDetection detection)
     {
