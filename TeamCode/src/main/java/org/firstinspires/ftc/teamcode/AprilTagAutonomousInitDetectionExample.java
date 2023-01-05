@@ -64,7 +64,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     private DcMotorEx rightFrontDrive = null;
     private DcMotorEx rightBackDrive = null;
     private DcMotor left_lift = null, right_lift =null;
-    private Servo tweezers = null;
+    private CRServo tweezers = null;
 
     @Override
     public void runOpMode() {
@@ -72,8 +72,9 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotorEx.class, "BottomLeft");
         rightFrontDrive = hardwareMap.get(DcMotorEx.class, "TopRight");
         rightBackDrive = hardwareMap.get(DcMotorEx.class, "BottomRight");
-        left_lift = hardwareMap.get(DcMotor.class, "left_lift_motor");
-        right_lift = hardwareMap.get(DcMotor.class, "right_lift_motor");
+        left_lift = hardwareMap.get(DcMotor.class, "Llift");
+        right_lift = hardwareMap.get(DcMotor.class, "Rlift");
+        tweezers = hardwareMap.get(CRServo.class, "tweezers");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -412,21 +413,22 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(100);
         }
         public void grabing(){
-            tweezers.setPosition(1.0);
+            tweezers.setPower(180);
         }
         public void droping (){
-        tweezers.setPosition(0.0);
+        tweezers.setPower(-180);
     }
     public void upM(){
 
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        right_lift.setTargetPosition(1200);
+        left_lift.setTargetPosition(1200);
+
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        right_lift.setTargetPosition(1200);
-        left_lift.setTargetPosition(1200);
 
         left_lift.setPower(0.8);
         right_lift.setPower(0.8);
@@ -436,11 +438,13 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        right_lift.setTargetPosition(2000);
+        left_lift.setTargetPosition(2000);
+
+
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        right_lift.setTargetPosition(2000);
-        left_lift.setTargetPosition(2000);
 
         left_lift.setPower(0.8);
         right_lift.setPower(0.8);
