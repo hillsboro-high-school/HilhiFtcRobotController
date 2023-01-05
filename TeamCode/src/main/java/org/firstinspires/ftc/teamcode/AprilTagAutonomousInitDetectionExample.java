@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -80,6 +81,9 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotorEx.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
+
+        left_lift.setDirection(DcMotor.Direction. REVERSE);
+        right_lift.setDirection(DcMotor.Direction. REVERSE);
 
 
         left_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -211,7 +215,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             grabing();
             sleep(200);
 
-            upM();
+            high();
             sleep(1200);
 
             sright();
@@ -418,7 +422,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         public void droping (){
         tweezers.setPower(-180);
     }
-    public void upM(){
+    public void medium(){
 
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -430,11 +434,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        left_lift.setPower(0.8);
-        right_lift.setPower(0.8);
+        left_lift.setPower(0.2);
+        right_lift.setPower(0.2);
 
     }
-    public void upH(){
+    public void high(){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -446,9 +450,60 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        left_lift.setPower(0.8);
-        right_lift.setPower(0.8);
+        left_lift.setPower(0.2);
+        right_lift.setPower(0.2);
 
+
+    }
+
+    private int Rise(){
+        int liftPosition = 1600;
+        if(gamepad1.dpad_up){//high junctions
+            right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            right_lift.setTargetPosition(liftPosition);
+            left_lift.setTargetPosition(liftPosition);
+
+            left_lift.setPower(0.8);
+            right_lift.setPower(0.8);
+        }
+        else if(gamepad1.dpad_right){//middle junctions
+            right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            right_lift.setTargetPosition(liftPosition - 400);//high rise amount of ticks minus the low amount of tick to make it the middle
+            left_lift.setTargetPosition(liftPosition - 400);
+
+            left_lift.setPower(0.8);
+            right_lift.setPower(0.8);
+        }
+        return liftPosition;
+    }
+    public void Lower(){
+        int liftPosition = Rise();
+
+        if(gamepad1.dpad_down){ //reset lift
+            right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            right_lift.setTargetPosition(-liftPosition);
+            left_lift.setTargetPosition(-liftPosition);
+
+            left_lift.setPower(0.8);
+            right_lift.setPower(0.8);//may need to be reversed to go downward
+
+        }
     }
 
 
