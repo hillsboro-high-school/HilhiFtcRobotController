@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -57,7 +56,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 0.45;
+    double globalAngle, power = 0.30;
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -81,9 +80,6 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotorEx.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
-
-        left_lift.setDirection(DcMotor.Direction. REVERSE);
-        right_lift.setDirection(DcMotor.Direction. REVERSE);
 
 
         left_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -193,19 +189,78 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
 
-            sright();
-            sleep(500);
+            grabing();
+            sleep(1400);
 
-            rotate(90, power*1.22);//still requires a sleep and its negative because the control hub is backwards
-            sleep(350);
+            //medium();
+            high();
+            sleep(3500);
+
+            sright();
+            sleep(150);
+
+            //power = 0.3
+            rotate(86, power);//still requires a sleep
+            sleep(400);
 
             rest();
 
             straight();
-
-            sleep(1560);
+            sleep(3200);//3100
 
             rest();
+
+            sleft();
+            sleep(1900);
+
+            rest();
+
+            straight();
+            sleep(430);//was 700
+
+            rest();
+            sleep (100);
+
+            tright();//left and right are oppisite rn
+            sleep(390);
+
+            rest();
+
+            straight();
+            sleep(100);
+
+            rest();
+
+            droping();
+            sleep(1000);
+            rest();
+            sleep(150);
+
+            tleft();
+            sleep(390);
+
+            rest();
+
+            backwards();
+            sleep(400);
+
+            rest();
+            sleep(150);
+
+            sright();
+            sleep(1500);
+
+            rest();
+            sleep(150);
+
+            rotate(84,power);
+            sleep(350);
+
+            rest();
+            sleep(100);
+
+            straight();
+            sleep(50);
         }
         /*
          * Handle LEFT 1
@@ -213,70 +268,148 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         if (tagOfInterest.id == LEFT) {
 
             grabing();
-            sleep(200);
+            sleep(1400);
 
+            //medium();
             high();
-            sleep(1200);
+            sleep(3500);
 
             sright();
-            sleep(500);
+            sleep(150);
 
-            telemetry.addData("ANGLE", getAngle());
-            telemetry.update();
-
-            sleep(200);
-
-            telemetry.addData("Mode", "Turning 90");
-            telemetry.update();
-
-
-            rotate(90, power*1.22);//still requires a sleep
-            sleep(350);
-
-            telemetry.addData("Mode", "Done");
-            telemetry.update();
+            //power = 0.3
+            rotate(86, power);//still requires a sleep
+            sleep(400);
 
             rest();
 
-            telemetry.addData("Mode", "done reseting");
-            telemetry.update();
-            sleep(300);
-
             straight();
-            sleep(1560);
-
-            telemetry.addData("Mode", "done forward");
-            telemetry.update();
+            sleep(3200);//3100
 
             rest();
 
             sleft();
-            sleep(2023);
+            sleep(1900);
 
             rest();
+
+            straight();
+            sleep(430);//was 700
+
+            rest();
+            sleep (100);
+
+            tright();//left and right are oppisite rn
+            sleep(390);
+
+            rest();
+
+            straight();
+            sleep(100);
+
+            rest();
+
+            droping();
+            sleep(1000);
+
+            rest();
+            sleep(150);
+
+            tleft();
+            sleep(390);
+
+            rest();
+
+            backwards();
+            sleep(400);
+
+            rest();
+            sleep(150);
+
+            sleft();
+            sleep(1570);
+
+            rest();
+
+            backwards();
+            sleep(150);
+
+            rest();
+
+
+
         }
         /*
          * Handle RIGHT 3
          */
         if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
+            grabing();
+            sleep(1400);
+
+            //medium();
+            high();
+            sleep(3500);
+
             sright();
-            sleep(500);
+            sleep(150);
 
-
-            rotate(90, power*1.22);//still requires a sleep
-            sleep(350);
-
-            power = 0.5;
+            //power = 0.3
+            rotate(86, power);//still requires a sleep
+            sleep(400);
 
             rest();
 
             straight();
-            sleep(1560);
+            sleep(3200);//3100
+
+            rest();
+
+            sleft();
+            sleep(1900);
+
+            rest();
+
+            straight();
+            sleep(430);//was 700
+
+            rest();
+            sleep (100);
+
+            tright();//left and right are oppisite rn
+            sleep(390);
+
+            rest();
+
+            straight();
+            sleep(100);
+
+            rest();
+
+            droping();
+            sleep(1000);
+
+            rest();
+
+            backwards();
+            sleep(250);
 
             rest();
 
             sright();
-            sleep(2023);
+            sleep(1850);
+
+            rotate(91, power);//still requires a sleep
+            sleep(400);
+
+            rest();
+
+            straight();
+            sleep(2000);
+
+            rest();
+
+            coneS();
+            sleep(3000);
 
             rest();
         }
@@ -367,143 +500,107 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     }
 
 
-        public void straight () {
-            leftFrontDrive.setPower(power);
-            rightFrontDrive.setPower(power);//goes STRAIGHT
-            leftBackDrive.setPower(power);
-            rightBackDrive.setPower(power);
-            sleep(100);
-        }
+    public void straight () {
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);//goes STRAIGHT
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
+        sleep(100);
+    }
 
-        public void backwards () {
-            leftFrontDrive.setPower(-power);
-            rightFrontDrive.setPower(-power);//goes backwards
-            leftBackDrive.setPower(-power);
-            rightBackDrive.setPower(-power);
-            sleep(100);
-        }
-        public void tleft () {
-            leftFrontDrive.setPower(power);
-            rightFrontDrive.setPower(-power);
-            leftBackDrive.setPower(power);
-            rightBackDrive.setPower(-power);
-        }
-        public void tright () {
-            leftFrontDrive.setPower(-power);
-            rightFrontDrive.setPower(power);
-            leftBackDrive.setPower(-power);
-            rightBackDrive.setPower(power);
-            sleep(100);
-        }
-        public void sright () {
-            leftFrontDrive.setPower(power);
-            rightFrontDrive.setPower(-power);
-            leftBackDrive.setPower(-power);
-            rightBackDrive.setPower(power);
-            sleep(100);
-        }
-        public void sleft () {
-            leftFrontDrive.setPower(-power);
-            rightFrontDrive.setPower(power);
-            leftBackDrive.setPower(power);
-            rightBackDrive.setPower(-power);
-            sleep(100);
-        }
-        public void rest () {
-            leftFrontDrive.setPower(0.0);
-            rightFrontDrive.setPower(0.0);
-            leftBackDrive.setPower(0.0);
-            rightBackDrive.setPower(0.0);
-            sleep(100);
-        }
-        public void grabing(){
-            tweezers.setPower(180);
-        }
-        public void droping (){
+    public void backwards () {
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(-power);//goes backwards
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(-power);
+        sleep(100);
+    }
+    public void tleft () {
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(-power);
+    }
+    public void tright () {
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(power);
+        sleep(100);
+    }
+    public void sright () {
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(power);
+        sleep(100);
+    }
+    public void sleft () {
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(-power);
+        sleep(100);
+    }
+    public void rest () {
+        leftFrontDrive.setPower(0.0);
+        rightFrontDrive.setPower(0.0);
+        leftBackDrive.setPower(0.0);
+        rightBackDrive.setPower(0.0);
+        sleep(100);
+    }
+    public void grabing(){
+        tweezers.setPower(180);
+    }
+    public void droping (){
         tweezers.setPower(-180);
     }
-    public void medium(){
-
-        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        right_lift.setTargetPosition(1200);
-        left_lift.setTargetPosition(1200);
-
-        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        left_lift.setPower(0.2);
-        right_lift.setPower(0.2);
-
-    }
-    public void high(){
+    public void coneS (){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         right_lift.setTargetPosition(2000);
         left_lift.setTargetPosition(2000);
 
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+    public void medium(){
+
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(-2025);
+        left_lift.setTargetPosition(-2025);
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        left_lift.setPower(0.2);
-        right_lift.setPower(0.2);
-
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
 
     }
+    public void high(){
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-    private int Rise(){
-        int liftPosition = 1600;
-        if(gamepad1.dpad_up){//high junctions
-            right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            right_lift.setTargetPosition(liftPosition);
-            left_lift.setTargetPosition(liftPosition);
-
-            left_lift.setPower(0.8);
-            right_lift.setPower(0.8);
-        }
-        else if(gamepad1.dpad_right){//middle junctions
-            right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            right_lift.setTargetPosition(liftPosition - 400);//high rise amount of ticks minus the low amount of tick to make it the middle
-            left_lift.setTargetPosition(liftPosition - 400);
-
-            left_lift.setPower(0.8);
-            right_lift.setPower(0.8);
-        }
-        return liftPosition;
-    }
-    public void Lower(){
-        int liftPosition = Rise();
-
-        if(gamepad1.dpad_down){ //reset lift
-            right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        right_lift.setTargetPosition(-2823);
+        left_lift.setTargetPosition(-2823);
 
 
-            right_lift.setTargetPosition(-liftPosition);
-            left_lift.setTargetPosition(-liftPosition);
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            left_lift.setPower(0.8);
-            right_lift.setPower(0.8);//may need to be reversed to go downward
 
-        }
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
     }
 
 
@@ -519,6 +616,5 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     }
 }
 
-//
 
 
