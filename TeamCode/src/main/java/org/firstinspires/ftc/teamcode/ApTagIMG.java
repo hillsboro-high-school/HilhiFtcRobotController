@@ -29,7 +29,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.util.ArrayList;
 
 @Autonomous
-public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
+public class ApTagIMG extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -56,7 +56,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 0.30;
+    double globalAngle, power = 258;//537 is one complete rotation
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -200,68 +200,17 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(150);
 
             //power = 0.3
-            rotate(86, power);//still requires a sleep
+            rotate(84, power - 78);//still requires a sleep
             sleep(400);
 
             rest();
 
             straight();
-            sleep(3200);//3100
+            sleep(1200);//3100
 
             rest();
 
-            sleft();
-            sleep(1775);
 
-            rest();
-
-            straight();
-            sleep(430);//was 700
-
-            rest();
-            sleep (100);
-
-            tright();//left and right are oppisite rn
-            sleep(390);
-
-            rest();
-
-            straight();
-            sleep(100);
-
-            rest();
-
-            droping();
-            sleep(1000);
-
-            rest();
-            sleep(150);
-
-            tleft();
-            sleep(390);
-
-            rest();
-
-            backwards();
-            sleep(400);
-
-            rest();
-            sleep(150);
-
-            sright();
-            sleep(1500);
-
-            rest();
-            sleep(150);
-
-            rotate(84,power);
-            sleep(350);
-
-            rest();
-            sleep(100);
-
-            straight();
-            sleep(50);
         }
         /*
          * Handle LEFT 1
@@ -279,7 +228,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(150);
 
             //power = 0.3
-            rotate(86, power);//still requires a sleep
+            rotate(86, power - 78);//still requires a sleep
             sleep(400);
 
             rest();
@@ -469,10 +418,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             RBPower = -power;
         } else return;
 
-        leftFrontDrive.setPower(LFPower);
-        rightFrontDrive.setPower(RFPower);
-        leftBackDrive.setPower(LBPower);
-        rightBackDrive.setPower(RBPower);
+        leftFrontDrive.setVelocity(LFPower);
+        rightFrontDrive.setVelocity(RFPower);
+        leftBackDrive.setVelocity(LBPower);
+        rightBackDrive.setVelocity(RBPower);
         // rotate until turn is completed.
         if (degrees < 0) {
             // On right turn we have to get off zero first.
@@ -502,45 +451,45 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
 
     public void straight () {
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(power);//goes STRAIGHT
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(power);
+        leftFrontDrive.setVelocity(power);
+        rightFrontDrive.setVelocity(power);//goes STRAIGHT
+        leftBackDrive.setVelocity(power);
+        rightBackDrive.setVelocity(power);
         sleep(100);
     }
 
     public void backwards () {
-        leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(-power);//goes backwards
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(-power);
+        leftFrontDrive.setVelocity(-power);
+        rightFrontDrive.setVelocity(-power);//goes backwards
+        leftBackDrive.setVelocity(-power);
+        rightBackDrive.setVelocity(-power);
         sleep(100);
     }
     public void tleft () {
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(-power);
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(-power);
+        leftFrontDrive.setVelocity(power);
+        rightFrontDrive.setVelocity(-power);
+        leftBackDrive.setVelocity(power);
+        rightBackDrive.setVelocity(-power);
     }
     public void tright () {
-        leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(power);
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(power);
+        leftFrontDrive.setVelocity(-power);
+        rightFrontDrive.setVelocity(power);
+        leftBackDrive.setVelocity(-power);
+        rightBackDrive.setVelocity(power);
         sleep(100);
     }
     public void sright () {
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(-power);
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(power);
+        leftFrontDrive.setVelocity(power);
+        rightFrontDrive.setVelocity(-power);
+        leftBackDrive.setVelocity(-power);
+        rightBackDrive.setVelocity(power);
         sleep(100);
     }
     public void sleft () {
-        leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(power);
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(-power);
+        leftFrontDrive.setVelocity(-power);
+        rightFrontDrive.setVelocity(power);
+        leftBackDrive.setVelocity(power);
+        rightBackDrive.setVelocity(-power);
         sleep(100);
     }
     public void rest () {
@@ -616,6 +565,3 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
-
-
-

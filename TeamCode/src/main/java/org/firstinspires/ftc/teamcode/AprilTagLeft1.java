@@ -1,35 +1,29 @@
 
 package org.firstinspires.ftc.teamcode;
 //change
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.CRServoImpl;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
-
 
 import java.util.ArrayList;
 
 @Autonomous
-public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
+public class AprilTagLeft1 extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -210,8 +204,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
             rest();
 
-            sleft();
-            sleep(1775);
+            sright();
+            sleep(1750);
 
             rest();
 
@@ -221,7 +215,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep (100);
 
-            tright();//left and right are oppisite rn
+            tleft();//left and right are oppisite rn
             sleep(390);
 
             rest();
@@ -233,11 +227,10 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
             droping();
             sleep(1000);
-
             rest();
             sleep(150);
 
-            tleft();
+            tright();
             sleep(390);
 
             rest();
@@ -248,13 +241,13 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(150);
 
-            sright();
+            sleft();
             sleep(1500);
 
             rest();
             sleep(150);
 
-            rotate(84,power);
+            rotate(-84,power);
             sleep(350);
 
             rest();
@@ -289,8 +282,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
             rest();
 
-            sleft();
-            sleep(1775);
+            sright();
+            sleep(1800);
 
             rest();
 
@@ -300,7 +293,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep (100);
 
-            tright();//left and right are oppisite rn
+            tleft();//left and right are oppisite rn
             sleep(390);
 
             rest();
@@ -316,7 +309,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(150);
 
-            tleft();
+            tright();
             sleep(390);
 
             rest();
@@ -365,8 +358,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
             rest();
 
-            sleft();
-            sleep(1775);
+            sright();
+            sleep(1800);
 
             rest();
 
@@ -376,7 +369,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep (100);
 
-            tright();//left and right are oppisite rn
+            tleft();//left and right are oppisite rn
             sleep(390);
 
             rest();
@@ -396,16 +389,16 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
             rest();
 
-            sright();
+            sleft();
             sleep(1850);
 
-            rotate(91, power);//still requires a sleep
+            rotate(-91, power);//still requires a sleep
             sleep(400);
 
             rest();
 
             straight();
-            sleep(2000);
+            sleep(1900);
 
             rest();
 
