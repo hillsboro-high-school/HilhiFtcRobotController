@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -34,6 +35,7 @@ public class ApTagIMG extends LinearOpMode {
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
+
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -65,7 +67,7 @@ public class ApTagIMG extends LinearOpMode {
     private DcMotorEx rightBackDrive = null;
     private DcMotor left_lift = null, right_lift =null;
     private CRServo tweezers = null;
-
+    private ColorSensor  CCsensor;
     @Override
     public void runOpMode() {
         leftFrontDrive = hardwareMap.get(DcMotorEx.class, "TopLeft");
@@ -75,6 +77,7 @@ public class ApTagIMG extends LinearOpMode {
         left_lift = hardwareMap.get(DcMotor.class, "Llift");
         right_lift = hardwareMap.get(DcMotor.class, "Rlift");
         tweezers = hardwareMap.get(CRServo.class, "tweezers");
+        CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -184,8 +187,15 @@ public class ApTagIMG extends LinearOpMode {
             telemetry.update();
         }
 
-
         waitForStart();
+
+        CCsensor.red();   // Red channel value
+        CCsensor.green(); // Green channel value
+        CCsensor.blue();  // Blue channel value
+
+        CCsensor.alpha(); // Total luminosity
+        CCsensor.argb();  //
+
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
 
@@ -197,11 +207,30 @@ public class ApTagIMG extends LinearOpMode {
             sleep(3500);
 
             sright();
-            sleep(150);
-
+            sleep(250);
             //power = 0.3
-            rotate(84, power - 78);//still requires a sleep
-            sleep(400);
+            /*rotate(86, 150);//still requires a sleep
+            sleep(4000);//go back to staighten
+            */
+            tright();
+            sleep(1300);
+
+            rest();
+
+            backwards();
+            sleep(1050);
+
+            rest();
+
+
+            while(CCsensor.blue() < 600) {
+                power = 100;
+                sright();
+            }
+
+            power = 258;
+            telemetry.addData("sensor:", CCsensor.argb());
+            telemetry.update();
 
             rest();
 
@@ -465,13 +494,13 @@ public class ApTagIMG extends LinearOpMode {
         rightBackDrive.setVelocity(-power);
         sleep(100);
     }
-    public void tleft () {
+    public void tright () {
         leftFrontDrive.setVelocity(power);
         rightFrontDrive.setVelocity(-power);
         leftBackDrive.setVelocity(power);
         rightBackDrive.setVelocity(-power);
     }
-    public void tright () {
+    public void tleft () {
         leftFrontDrive.setVelocity(-power);
         rightFrontDrive.setVelocity(power);
         leftBackDrive.setVelocity(-power);
@@ -563,5 +592,6 @@ public class ApTagIMG extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+        telemetry.addData("sensor:", CCsensor.blue());
     }
 }
