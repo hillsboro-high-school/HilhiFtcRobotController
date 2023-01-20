@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 //change
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -58,7 +59,7 @@ public class ApTagIMG extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 258;//537 is one complete rotation
+    double globalAngle, power = 350;//537 is one complete rotation 258
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -68,6 +69,7 @@ public class ApTagIMG extends LinearOpMode {
     private DcMotor left_lift = null, right_lift =null;
     private CRServo tweezers = null;
     private ColorSensor  CCsensor;
+    private ColorSensor  FCsensor;
     @Override
     public void runOpMode() {
         leftFrontDrive = hardwareMap.get(DcMotorEx.class, "TopLeft");
@@ -78,6 +80,7 @@ public class ApTagIMG extends LinearOpMode {
         right_lift = hardwareMap.get(DcMotor.class, "Rlift");
         tweezers = hardwareMap.get(CRServo.class, "tweezers");
         CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
+        FCsensor = hardwareMap.get(ColorSensor.class,"fcsensor");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -202,44 +205,61 @@ public class ApTagIMG extends LinearOpMode {
             grabing();
             sleep(1400);
 
-            //medium();
-            high();
-            sleep(3500);
+            low();
+            sleep(2200);
 
             sright();
             sleep(250);
-            //power = 0.3
-            /*rotate(86, 150);//still requires a sleep
-            sleep(4000);//go back to staighten
-            */
+
             tright();
-            sleep(1300);
+            sleep(1150);
 
             rest();
 
             backwards();
-            sleep(1050);
+            sleep(1200);
 
             rest();
 
 
-            while(CCsensor.blue() < 600) {
-                power = 100;
+            while (opModeIsActive() && CCsensor.blue() < 350) {
+                power = 50;//100
                 sright();
             }
 
-            power = 258;
-            telemetry.addData("sensor:", CCsensor.argb());
-            telemetry.update();
-
             rest();
 
+            sleft();
+            sleep(100);
+
+            rest();
+            power = 350;
             straight();
-            sleep(1200);//3100
+            sleep(900);
+
+            rest();
+            sleep(300);
+
+
+            while (opModeIsActive() && FCsensor.red() < 230) {
+                power = 70;
+                straight();
+            }
 
             rest();
 
+            droping();
+            sleep(1700);
 
+            power = 350;
+            rest();
+
+
+            while (opModeIsActive() && FCsensor.red() < 250) {
+                power = 70;
+                straight();
+
+            }
         }
         /*
          * Handle LEFT 1
@@ -565,6 +585,25 @@ public class ApTagIMG extends LinearOpMode {
         right_lift.setPower(0.8);
 
     }
+
+    public void low(){
+
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(-1400);
+        left_lift.setTargetPosition(-1400);
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+
+
     public void high(){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -592,6 +631,7 @@ public class ApTagIMG extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-        telemetry.addData("sensor:", CCsensor.blue());
+        telemetry.addData("BLUE sensor:", CCsensor.blue());
+        telemetry.addData("RED sensor:", FCsensor.red());
     }
 }
