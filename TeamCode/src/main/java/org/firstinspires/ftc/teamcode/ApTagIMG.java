@@ -217,31 +217,31 @@ public class ApTagIMG extends LinearOpMode {
             rest();
 
             backwards();
-            sleep(1200);
+            sleep(1050);
 
             rest();
 
 
             while (opModeIsActive() && CCsensor.blue() < 350) {
-                power = 50;//100
+                power = 100;//100
                 sright();
             }
 
             rest();
 
-            sleft();
-            sleep(100);
-
-            rest();
             power = 350;
-            straight();
-            sleep(900);
+
+            sleft();
+            sleep(380);
 
             rest();
-            sleep(300);
 
+            backwards();
+            sleep(200);
 
-            while (opModeIsActive() && FCsensor.red() < 230) {
+            rest();
+
+            while (opModeIsActive() && FCsensor.red() < 400 ) {//wall to low junction
                 power = 70;
                 straight();
             }
@@ -251,15 +251,19 @@ public class ApTagIMG extends LinearOpMode {
             droping();
             sleep(1700);
 
-            power = 350;
             rest();
 
+            power = 350;
+            straight();
+            sleep(300);
 
-            while (opModeIsActive() && FCsensor.red() < 250) {
+            rest();
+
+            while (opModeIsActive() && FCsensor.red() < 400 ) {
                 power = 70;
                 straight();
-
             }
+            rest();
         }
         /*
          * Handle LEFT 1
@@ -591,8 +595,8 @@ public class ApTagIMG extends LinearOpMode {
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(-1400);
-        left_lift.setTargetPosition(-1400);
+        right_lift.setTargetPosition(-1300);
+        left_lift.setTargetPosition(-1300);
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -631,7 +635,10 @@ public class ApTagIMG extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-        telemetry.addData("BLUE sensor:", CCsensor.blue());
-        telemetry.addData("RED sensor:", FCsensor.red());
+        telemetry.addData("BLUE Csensor:", CCsensor.blue());
+        telemetry.addData("RED Csensor:", CCsensor.red());
+
+        telemetry.addData("BLUE Fsensor:", FCsensor.blue());
+        telemetry.addData("RED Fsensor:", FCsensor.red());
     }
 }
