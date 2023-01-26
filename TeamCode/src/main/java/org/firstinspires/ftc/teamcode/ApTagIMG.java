@@ -221,7 +221,7 @@ public class ApTagIMG extends LinearOpMode {
 
             rest();
 
-            power = 0.3;
+            power = 0.4;
             backwards();
             sleep(500);
 
@@ -229,7 +229,7 @@ public class ApTagIMG extends LinearOpMode {
             sleep(150);
 
             while (opModeIsActive() && CCsensor.blue() < 550) {
-                power = 0.3;//100
+                power = 0.35;//100
                 sright();
             }
 
@@ -250,9 +250,15 @@ public class ApTagIMG extends LinearOpMode {
             power = 1;
 
            straight();
-           sleep(450);
+           sleep(460);
+
+           rest();
+
+           tright();
+           sleep(100);
 
             rest();
+            sleep(100);
 
             droping();
             sleep(1700);
@@ -261,15 +267,25 @@ public class ApTagIMG extends LinearOpMode {
 
             power = 1;
             straight();
-            //sleep();
+            sleep(100);
 
             rest();
+            sleep(200);
 
-            while (opModeIsActive() && FCsensor.red() < 400 ) {
+            while (opModeIsActive() && FCsensor.red() < 375 ) {//cone stack line
                 power = 0.4;
                 straight();
             }
+            power = 1;
             rest();
+
+            straight();
+            sleep(2);
+
+           rest();
+
+            tright();
+            sleep(330);
         }
         /*
          * Handle LEFT 1
@@ -601,8 +617,8 @@ public class ApTagIMG extends LinearOpMode {
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(-1300);
-        left_lift.setTargetPosition(-1300);
+        right_lift.setTargetPosition(-1200);
+        left_lift.setTargetPosition(-1200);
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
