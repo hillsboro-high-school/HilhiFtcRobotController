@@ -59,7 +59,7 @@ public class ApTagIMG extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 350;//537 is one complete rotation 258
+    double globalAngle, power = 1;//537 is one complete rotation 258
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -68,6 +68,7 @@ public class ApTagIMG extends LinearOpMode {
     private DcMotorEx rightBackDrive = null;
     private DcMotor left_lift = null, right_lift =null;
     private CRServo tweezers = null;
+    //private CRServo cameraC = null;
     private ColorSensor  CCsensor;
     private ColorSensor  FCsensor;
     @Override
@@ -81,6 +82,7 @@ public class ApTagIMG extends LinearOpMode {
         tweezers = hardwareMap.get(CRServo.class, "tweezers");
         CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
         FCsensor = hardwareMap.get(ColorSensor.class,"fcsensor");
+        //cameraC = hardwareMap.get(CRServo.class, "cameraC");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -190,6 +192,9 @@ public class ApTagIMG extends LinearOpMode {
             telemetry.update();
         }
 
+
+
+
         waitForStart();
 
         CCsensor.red();   // Red channel value
@@ -209,42 +214,43 @@ public class ApTagIMG extends LinearOpMode {
             sleep(2200);
 
             sright();
-            sleep(250);
+            sleep(100);
 
             tright();
-            sleep(1150);
+            sleep(400);
 
             rest();
 
+            power = 0.3;
             backwards();
-            sleep(1050);
+            sleep(500);
 
             rest();
+            sleep(150);
 
-
-            while (opModeIsActive() && CCsensor.blue() < 350) {
-                power = 100;//100
+            while (opModeIsActive() && CCsensor.blue() < 550) {
+                power = 0.3;//100
                 sright();
             }
 
             rest();
 
-            power = 350;
+            power = 1;
 
-            sleft();
-            sleep(380);
+            sleft();//this only sleeps for 50ms all others are 100
+            sleep(15);
 
             rest();
 
             backwards();
-            sleep(200);
+            sleep(50);
 
             rest();
 
-            while (opModeIsActive() && FCsensor.red() < 400 ) {//wall to low junction
-                power = 70;
-                straight();
-            }
+            power = 1;
+
+           straight();
+           sleep(450);
 
             rest();
 
@@ -253,14 +259,14 @@ public class ApTagIMG extends LinearOpMode {
 
             rest();
 
-            power = 350;
+            power = 1;
             straight();
-            sleep(300);
+            //sleep();
 
             rest();
 
             while (opModeIsActive() && FCsensor.red() < 400 ) {
-                power = 70;
+                power = 0.4;
                 straight();
             }
             rest();
@@ -471,10 +477,10 @@ public class ApTagIMG extends LinearOpMode {
             RBPower = -power;
         } else return;
 
-        leftFrontDrive.setVelocity(LFPower);
-        rightFrontDrive.setVelocity(RFPower);
-        leftBackDrive.setVelocity(LBPower);
-        rightBackDrive.setVelocity(RBPower);
+        leftFrontDrive.setPower(LFPower);
+        rightFrontDrive.setPower(RFPower);
+        leftBackDrive.setPower(LBPower);
+        rightBackDrive.setPower(RBPower);
         // rotate until turn is completed.
         if (degrees < 0) {
             // On right turn we have to get off zero first.
@@ -504,46 +510,46 @@ public class ApTagIMG extends LinearOpMode {
 
 
     public void straight () {
-        leftFrontDrive.setVelocity(power);
-        rightFrontDrive.setVelocity(power);//goes STRAIGHT
-        leftBackDrive.setVelocity(power);
-        rightBackDrive.setVelocity(power);
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);//goes STRAIGHT
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
         sleep(100);
     }
 
     public void backwards () {
-        leftFrontDrive.setVelocity(-power);
-        rightFrontDrive.setVelocity(-power);//goes backwards
-        leftBackDrive.setVelocity(-power);
-        rightBackDrive.setVelocity(-power);
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(-power);//goes backwards
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(-power);
         sleep(100);
     }
     public void tright () {
-        leftFrontDrive.setVelocity(power);
-        rightFrontDrive.setVelocity(-power);
-        leftBackDrive.setVelocity(power);
-        rightBackDrive.setVelocity(-power);
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(-power);
     }
     public void tleft () {
-        leftFrontDrive.setVelocity(-power);
-        rightFrontDrive.setVelocity(power);
-        leftBackDrive.setVelocity(-power);
-        rightBackDrive.setVelocity(power);
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(power);
         sleep(100);
     }
     public void sright () {
-        leftFrontDrive.setVelocity(power);
-        rightFrontDrive.setVelocity(-power);
-        leftBackDrive.setVelocity(-power);
-        rightBackDrive.setVelocity(power);
+        leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(-power);
+        leftBackDrive.setPower(-power);
+        rightBackDrive.setPower(power);
         sleep(100);
     }
     public void sleft () {
-        leftFrontDrive.setVelocity(-power);
-        rightFrontDrive.setVelocity(power);
-        leftBackDrive.setVelocity(power);
-        rightBackDrive.setVelocity(-power);
-        sleep(100);
+        leftFrontDrive.setPower(-power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        rightBackDrive.setPower(-power);
+        sleep(50);
     }
     public void rest () {
         leftFrontDrive.setPower(0.0);
