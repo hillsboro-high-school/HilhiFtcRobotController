@@ -215,6 +215,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
             rest();
 
+
             straight();
             sleep(430);//was 700
 
