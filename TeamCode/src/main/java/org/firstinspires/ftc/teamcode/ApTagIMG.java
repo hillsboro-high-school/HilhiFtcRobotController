@@ -246,7 +246,7 @@ public class ApTagIMG extends LinearOpMode {
             rest();
 
            straight();
-           sleep(467);
+           sleep(464);
 
            rest();
 
