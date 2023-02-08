@@ -206,27 +206,27 @@ public class ApTagIMG extends LinearOpMode {
             power = 1;
 
             grabing();
-            sleep(1400);
+            sleep(1700);
 
-            //low();
-            //sleep(1100);
+            low();
+            sleep(1100);
 
             sright();
             sleep(100);
 
             tright();
-            sleep(400);
+            sleep(450);
 
             rest();
 
-            power = 0.45;
+            power = 0.4;
             backwards();
-            sleep(330);
+            sleep(500);
 
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.blue() < 550) {
+            while (opModeIsActive() && CCsensor.blue() < 490) {
                 power = 0.35;//100
                 sright();
             }
@@ -245,15 +245,13 @@ public class ApTagIMG extends LinearOpMode {
 
             rest();
 
-            rest();
-
            straight();
-           sleep(450);
+           sleep(467);
 
            rest();
 
            tright();
-           sleep(80);
+           sleep(50);
 
             rest();
             sleep(100);
@@ -264,7 +262,7 @@ public class ApTagIMG extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.red() < 400 ) {//cone stack line
+            while (opModeIsActive() && CCsensor.red() < 360 ) {//cone stack line
                 power = 0.35;
                 straight();
             }
@@ -275,28 +273,29 @@ public class ApTagIMG extends LinearOpMode {
             sleep(90);
 
             rest();
-            sleep(100);
+            sleep(85);
 
             sright();
-            sleep(115);
+            sleep(180);
 
             rest();
             sleep(100);
 
-            tright();
-            sleep(400);
+           // tright();
+            //sleep(405);
+            rotate(75,1);
 
             rest();
             sleep(100);
 
             straight();
-            sleep(120);
+            sleep(95);
 
             rest();
             sleep(100);
 
-            //lowerTC();//lowers to the cone on the cone stack
-            //sleep(1000);
+            lowerTC();//lowers to the cone on the cone stack
+            sleep(1000);
 
             rest();
 
@@ -305,14 +304,14 @@ public class ApTagIMG extends LinearOpMode {
 
             rest();
 
-            //ToHigh();
-            //sleep(2800);
+            low();
+            sleep(1300);
 
             rest();
             sleep(100);
 
             backwards();
-            sleep(300);
+            sleep(440);
 
             rest();
             sleep(100);
