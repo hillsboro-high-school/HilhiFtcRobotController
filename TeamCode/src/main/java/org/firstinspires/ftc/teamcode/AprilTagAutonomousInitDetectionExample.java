@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 //change
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -35,6 +37,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
     static final double FEET_PER_METER = 3.28084;
 
+
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
@@ -56,7 +59,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 0.30;
+    double globalAngle, power = 1;//537 is one complete rotation 258
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -65,6 +68,12 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     private DcMotorEx rightBackDrive = null;
     private DcMotor left_lift = null, right_lift =null;
     private CRServo tweezers = null;
+    private CRServo flagS = null;
+    //private CRServo cameraC = null;
+    private ColorSensor  CCsensor;
+    private ColorSensor  FCsensor;
+    private ColorSensor  ConeSensor;
+
 
     @Override
     public void runOpMode() {
@@ -75,6 +84,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         left_lift = hardwareMap.get(DcMotor.class, "Llift");
         right_lift = hardwareMap.get(DcMotor.class, "Rlift");
         tweezers = hardwareMap.get(CRServo.class, "tweezers");
+        CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
+        FCsensor = hardwareMap.get(ColorSensor.class,"fcsensor");
+        ConeSensor = hardwareMap.get(ColorSensor.class,"ConeSensor");
+        //flagS = hardwareMap.get(CRServo.class,"flagS");
+        //cameraC = hardwareMap.get(CRServo.class, "cameraC");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -186,234 +200,385 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
 
         waitForStart();
+
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
+            power = 1;
 
             grabing();
-            sleep(1400);
+            sleep(1700);
 
-            //medium();
-            high();
-            sleep(3500);
+            low();
+            sleep(1100);
 
             sright();
-            sleep(150);
-
-            //power = 0.3
-            rotate(86, power);//still requires a sleep
-            sleep(400);
-
-            rest();
-
-            straight();
-            sleep(3200);//3100
-
-            rest();
-
-            sleft();
-            sleep(1775);
-
-            rest();
-
-
-            straight();
-            sleep(430);//was 700
-
-            rest();
-            sleep (100);
-
-            tright();//left and right are oppisite rn
-            sleep(390);
-
-            rest();
-
-            straight();
             sleep(100);
 
+            tright();
+            sleep(450);
+
             rest();
 
+            power = 0.4;
+            backwards();
+            sleep(500);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && ConeSensor.red() < 335) {
+                power = 0.35;//100
+                sleft();
+            }
+
+            rest();
+
+            power = 1;
+
+            sright();//this only sleeps for 50ms all others are 100
+            sleep(65);
+
+            rest();
+
+            backwards();
+            sleep(65);
+
+            rest();
+
+            straight();
+            sleep(469);
+
+            rest();
+
+            tright();
+            sleep(25);
+
+            rest();
+            sleep(100);
+
             droping();
+            sleep(1700);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && (ConeSensor.red() < 380 || ConeSensor.blue() < 460)) {//cone stack line
+                power = 0.30;
+                straight();
+            }
+            power = 1;
+            rest();
+
+            backwards();
+            sleep(55);
+
+            rest();
+            sleep(100);
+
+            sleft();
+            sleep(166);
+
+            rest();
+            sleep(100);
+
+            // tright();
+            //sleep(405);
+            rotate(-73,1);
+
+            rest();
+            sleep(100);
+
+            power = 0.5;
+            straight();
+            sleep(152);
+
+            rest();
+            sleep(100);
+
+            sright();
+            sleep(42);
+
+            rest();
+            sleep(100);
+
+
+            power = 1;
+
+            lowerTC();//lowers to the cone on the cone stack
             sleep(1000);
 
             rest();
-            sleep(150);
 
-            tleft();
-            sleep(390);
+            grabing();
+            sleep(1700);
 
             rest();
+
+            low();
+            sleep(1300);
+
+            rest();
+            sleep(100);
 
             backwards();
             sleep(400);
 
             rest();
-            sleep(150);
-
-            sright();
-            sleep(1500);
-
-            rest();
-            sleep(150);
-
-            rotate(84,power);
-            sleep(350);
-
-            rest();
             sleep(100);
-
-            straight();
-            sleep(50);
         }
         /*
          * Handle LEFT 1
          */
         if (tagOfInterest.id == LEFT) {
+            power = 1;
 
             grabing();
-            sleep(1400);
+            sleep(1700);
 
-            //medium();
-            high();
-            sleep(3500);
+            low();
+            sleep(1100);
 
             sright();
-            sleep(150);
-
-            //power = 0.3
-            rotate(86, power);//still requires a sleep
-            sleep(400);
-
-            rest();
-
-            straight();
-            sleep(3200);//3100
-
-            rest();
-
-            sleft();
-            sleep(1775);
-
-            rest();
-
-            straight();
-            sleep(430);//was 700
-
-            rest();
-            sleep (100);
-
-            tright();//left and right are oppisite rn
-            sleep(390);
-
-            rest();
-
-            straight();
             sleep(100);
 
+            tright();
+            sleep(450);
+
             rest();
 
+            power = 0.4;
+            backwards();
+            sleep(500);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && ConeSensor.red() < 335) {
+                power = 0.35;//100
+                sleft();
+            }
+
+            rest();
+
+            power = 1;
+
+            sright();//this only sleeps for 50ms all others are 100
+            sleep(5);
+
+            rest();
+
+            backwards();
+            sleep(50);
+
+            rest();
+
+            straight();
+            sleep(469);
+
+            rest();
+
+            tleft();
+            sleep(50);
+
+            rest();
+            sleep(100);
+
             droping();
+            sleep(1700);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && (ConeSensor.red() < 345 || ConeSensor.blue() < 460)) {//cone stack line
+                power = 0.30;
+                straight();
+            }
+            power = 1;
+            rest();
+
+            backwards();
+            sleep(55);
+
+            rest();
+            sleep(100);
+
+            sleft();
+            sleep(166);
+
+            rest();
+            sleep(100);
+
+            // tright();
+            //sleep(405);
+            rotate(-73,1);
+
+            rest();
+            sleep(100);
+
+            power = 0.5;
+            straight();
+            sleep(152);
+
+            rest();
+            sleep(100);
+
+            sright();
+            sleep(42);
+
+            rest();
+            sleep(100);
+
+
+            power = 1;
+
+            lowerTC();//lowers to the cone on the cone stack
             sleep(1000);
 
             rest();
-            sleep(150);
 
-            tleft();
-            sleep(390);
+            grabing();
+            sleep(1700);
 
             rest();
+
+            low();
+            sleep(1300);
+
+            rest();
+            sleep(100);
 
             backwards();
-            sleep(400);
+            sleep(120);
 
             rest();
-            sleep(150);
-
-            sleft();
-            sleep(1570);
-
-            rest();
-
-            backwards();
-            sleep(150);
-
-            rest();
-
-
-
+            sleep(100);
         }
         /*
          * Handle RIGHT 3
          */
         if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
-            grabing();
-            sleep(1400);
+            power = 1;
 
-            //medium();
-            high();
-            sleep(3500);
+            grabing();
+            sleep(1700);
+
+            low();
+            sleep(1100);
 
             sright();
-            sleep(150);
-
-            //power = 0.3
-            rotate(86, power);//still requires a sleep
-            sleep(400);
-
-            rest();
-
-            straight();
-            sleep(3200);//3100
-
-            rest();
-
-            sleft();
-            sleep(1775);
-
-            rest();
-
-            straight();
-            sleep(430);//was 700
-
-            rest();
-            sleep (100);
-
-            tright();//left and right are oppisite rn
-            sleep(390);
-
-            rest();
-
-            straight();
             sleep(100);
 
+            tright();
+            sleep(450);
+
             rest();
 
-            droping();
-            sleep(1000);
+            power = 0.4;
+            backwards();
+            sleep(500);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && ConeSensor.red() < 335) {
+                power = 0.35;//100
+                sleft();
+            }
+
+            rest();
+
+            power = 1;
+
+            sright();//this only sleeps for 50ms all others are 100
+            sleep(5);
 
             rest();
 
             backwards();
-            sleep(250);
-
-            rest();
-
-            sright();
-            sleep(1850);
-
-            rotate(91, power);//still requires a sleep
-            sleep(400);
+            sleep(50);
 
             rest();
 
             straight();
-            sleep(2000);
+            sleep(469);
 
             rest();
 
-            coneS();
-            sleep(3000);
+            tleft();
+            sleep(50);
 
             rest();
+            sleep(100);
+
+            droping();
+            sleep(1700);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && (ConeSensor.red() < 345 || ConeSensor.blue() < 460)) {//cone stack line
+                power = 0.30;
+                straight();
+            }
+            power = 1;
+            rest();
+
+            backwards();
+            sleep(55);
+
+            rest();
+            sleep(100);
+
+            sleft();
+            sleep(166);
+
+            rest();
+            sleep(100);
+
+            // tright();
+            //sleep(405);
+            rotate(-73,1);
+
+            rest();
+            sleep(100);
+
+            power = 0.5;
+            straight();
+            sleep(152);
+
+            rest();
+            sleep(100);
+
+            sright();
+            sleep(42);
+
+            rest();
+            sleep(100);
+
+
+            power = 1;
+
+            lowerTC();//lowers to the cone on the cone stack
+            sleep(1000);
+
+            rest();
+
+            grabing();
+            sleep(1700);
+
+            rest();
+
+            low();
+            sleep(1300);
+
+            rest();
+            sleep(100);
+
+            backwards();
+            sleep(600);
+
+            rest();
+            sleep(100);
         }
 
 
@@ -517,13 +682,13 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         rightBackDrive.setPower(-power);
         sleep(100);
     }
-    public void tleft () {
+    public void tright () {
         leftFrontDrive.setPower(power);
         rightFrontDrive.setPower(-power);
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(-power);
     }
-    public void tright () {
+    public void tleft () {
         leftFrontDrive.setPower(-power);
         rightFrontDrive.setPower(power);
         leftBackDrive.setPower(-power);
@@ -542,9 +707,41 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         rightFrontDrive.setPower(power);
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(-power);
-        sleep(100);
+        sleep(50);
     }
+
+    public void diagLeft () {
+        leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+
+        //leftFrontDrive.setPower(power);
+        rightFrontDrive.setPower(power);
+        leftBackDrive.setPower(power);
+        // rightBackDrive.setPower(power);
+        sleep(50);
+    }
+    public void diagRight () {
+        leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        leftFrontDrive.setPower(power);
+
+        //rightFrontDrive.setPower(power);
+        //leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
+        sleep(50);
+    }
+
+
     public void rest () {
+        leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
         leftFrontDrive.setPower(0.0);
         rightFrontDrive.setPower(0.0);
         leftBackDrive.setPower(0.0);
@@ -588,12 +785,64 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         right_lift.setPower(0.8);
 
     }
+
+    public void low(){
+
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(-1200);
+        left_lift.setTargetPosition(-1200);
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+
+    public void ToHigh(){
+
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(-2400);
+        left_lift.setTargetPosition(-2400);
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+
     public void high(){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(-2823);
-        left_lift.setTargetPosition(-2823);
+        right_lift.setTargetPosition(-2400);
+        left_lift.setTargetPosition(-2400);
+
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+
+    public  void lowerTC(){
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(770);
+        left_lift.setTargetPosition(770);
 
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -615,8 +864,13 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+        telemetry.addData("BLUE Csensor:", CCsensor.blue());
+        telemetry.addData("RED Csensor:", CCsensor.red());
+        telemetry.addLine();
+        telemetry.addData("BLUE Conesensor:", ConeSensor.blue());
+        telemetry.addData("RED Conesensor:", ConeSensor.red());
+        telemetry.addLine();
+        telemetry.addData("BLUE Fsensor:", FCsensor.blue());
+        telemetry.addData("RED Fsensor:", FCsensor.red());
     }
 }
-
-
-
