@@ -205,14 +205,11 @@ public class ApTagIMG extends LinearOpMode {
         if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
             power = 1;
 
-            grabing();
-            sleep(1700);
-
             low();
             sleep(1100);
 
             sright();
-            sleep(100);
+            sleep(110);
 
             tright();
             sleep(450);
@@ -226,7 +223,7 @@ public class ApTagIMG extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.blue() < 460) {
+            while (opModeIsActive() && (CCsensor.red() < 345 && CCsensor.blue() < 300)) {
                 power = 0.35;//100
                 sright();
             }
@@ -257,50 +254,45 @@ public class ApTagIMG extends LinearOpMode {
             sleep(100);
 
             droping();
-            sleep(1700);
+            sleep(1700);//drops cone on the low junction
 
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.red() < 345 || CCsensor.blue() < 460) {//cone stack line
+            while (opModeIsActive() && (CCsensor.red() < 345 && CCsensor.blue() < 460)) {//cone stack line
                 power = 0.30;
                 straight();
             }
             power = 1;
             rest();
 
-            backwards();
-            sleep(55);
+            straight();
+            sleep(45);
 
             rest();
             sleep(100);
 
-            sright();
-            sleep(166);
-
-            rest();
-            sleep(100);
-
-           // tright();
-            //sleep(405);
             rotate(73,1);
 
             rest();
             sleep(100);
 
-            power = 0.5;
-            straight();
-            sleep(152);
+            while (opModeIsActive() && (FCsensor.red() < 370 && FCsensor.blue() < 410)) {//FC is the sensor on the salon doors
+                power = 0.35;//100
+                sright();
+            }
 
-            rest();
-            sleep(100);
+
+            power = 0.5;
 
             sleft();
-            sleep(42);
+            sleep(63);
+
+            straight();
+            sleep(410);
 
             rest();
             sleep(100);
-
 
             power = 1;
 
@@ -332,14 +324,11 @@ public class ApTagIMG extends LinearOpMode {
         if (tagOfInterest.id == LEFT) {
             power = 1;
 
-            grabing();
-            sleep(1700);
-
             low();
             sleep(1100);
 
             sright();
-            sleep(100);
+            sleep(110);
 
             tright();
             sleep(450);
@@ -353,7 +342,7 @@ public class ApTagIMG extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.blue() < 460) {
+            while (opModeIsActive() && (CCsensor.red() < 345 && CCsensor.blue() < 300)) {
                 power = 0.35;//100
                 sright();
             }
@@ -384,50 +373,45 @@ public class ApTagIMG extends LinearOpMode {
             sleep(100);
 
             droping();
-            sleep(1700);
+            sleep(1700);//drops cone on the low junction
 
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.red() < 345 ) {//cone stack line
+            while (opModeIsActive() && (CCsensor.red() < 345 && CCsensor.blue() < 460)) {//cone stack line
                 power = 0.30;
                 straight();
             }
             power = 1;
             rest();
 
-            backwards();
-            sleep(55);
+            straight();
+            sleep(45);
 
             rest();
             sleep(100);
 
-            sright();
-            sleep(166);
-
-            rest();
-            sleep(100);
-
-            // tright();
-            //sleep(405);
             rotate(73,1);
 
             rest();
             sleep(100);
 
-            power = 0.5;
-            straight();
-            sleep(152);
+            while (opModeIsActive() && (FCsensor.red() < 370 && FCsensor.blue() < 410)) {//FC is the sensor on the salon doors
+                power = 0.35;//100
+                sright();
+            }
 
-            rest();
-            sleep(100);
+
+            power = 0.5;
 
             sleft();
-            sleep(42);
+            sleep(63);
+
+            straight();
+            sleep(410);
 
             rest();
             sleep(100);
-
 
             power = 1;
 
@@ -448,7 +432,7 @@ public class ApTagIMG extends LinearOpMode {
             sleep(100);
 
             backwards();
-            sleep(600);
+            sleep(750);
 
             rest();
             sleep(100);
@@ -461,14 +445,11 @@ public class ApTagIMG extends LinearOpMode {
 
             power = 1;
 
-            grabing();
-            sleep(1700);
-
             low();
             sleep(1100);
 
             sright();
-            sleep(100);
+            sleep(110);
 
             tright();
             sleep(450);
@@ -482,7 +463,7 @@ public class ApTagIMG extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.blue() < 460) {
+            while (opModeIsActive() && (CCsensor.red() < 345 && CCsensor.blue() < 300)) {
                 power = 0.35;//100
                 sright();
             }
@@ -513,50 +494,45 @@ public class ApTagIMG extends LinearOpMode {
             sleep(100);
 
             droping();
-            sleep(1700);
+            sleep(1700);//drops cone on the low junction
 
             rest();
             sleep(100);
 
-            while (opModeIsActive() && CCsensor.red() < 345 ) {//cone stack line
+            while (opModeIsActive() && (CCsensor.red() < 345 && CCsensor.blue() < 460)) {//cone stack line
                 power = 0.30;
                 straight();
             }
             power = 1;
             rest();
 
-            backwards();
-            sleep(55);
+            straight();
+            sleep(45);
 
             rest();
             sleep(100);
 
-            sright();
-            sleep(166);
-
-            rest();
-            sleep(100);
-
-            // tright();
-            //sleep(405);
             rotate(73,1);
 
             rest();
             sleep(100);
 
-            power = 0.5;
-            straight();
-            sleep(152);
+            while (opModeIsActive() && (FCsensor.red() < 370 && FCsensor.blue() < 410)) {//FC is the sensor on the salon doors
+                power = 0.35;//100
+                sright();
+            }
 
-            rest();
-            sleep(100);
+
+            power = 0.5;
 
             sleft();
-            sleep(42);
+            sleep(63);
+
+            straight();
+            sleep(410);
 
             rest();
             sleep(100);
-
 
             power = 1;
 
@@ -577,7 +553,7 @@ public class ApTagIMG extends LinearOpMode {
             sleep(100);
 
             backwards();
-            sleep(120);
+            sleep(27);
 
             rest();
             sleep(100);
