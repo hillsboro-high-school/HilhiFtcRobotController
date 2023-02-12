@@ -202,8 +202,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         waitForStart();
 
         /* Actually do something useful */
-        if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
-            power = 1;
+        if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {   power = 1;
 
             low();
             sleep(1100);
@@ -223,7 +222,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < 230 && ConeSensor.blue() < 200)) {
+            while (opModeIsActive() && (ConeSensor.red() < 250 && ConeSensor.blue() < 225)) {
                 power = 0.35;//100
                 sleft();
             }
@@ -233,7 +232,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             power = 1;
 
             sright();//this only sleeps for 50ms all others are 100
-            sleep(30);
+            sleep(75);
 
             rest();
 
@@ -249,78 +248,48 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(100);
             power = 0.35;
 
+            rest();
+            sleep(100);
+
             sright();
-            sleep(5);
+            sleep(100);
 
             rest();
             sleep(100);
 
             droping();
-            sleep(2100);//Drops the cone
+            sleep(2100);
 
             rest();
             sleep(150);
 
-            while (opModeIsActive() && (ConeSensor.red() < 230 && ConeSensor.blue() < 200)) {//cone stack line
-                power = 0.35;
-                straight();
-            }
-            power = 1;
-            rest();
-
-            straight();
-            sleep(50);
-
-            rest();
-            sleep(100);
-
-            // tright();
-            //sleep(405);
-            rotate(-72,1);
-
-
-            while (opModeIsActive() && (FCsensor.red() < 370 && FCsensor.blue() < 410)) {
-                power = 0.35;//100
-                sleft();
-            }
-
-            rest();
-            sleep(100);
-
-            power = 0.5;
-
-            sright();
-            sleep(63);
-
-            straight();
-            sleep(410);
-
-            rest();
-            sleep(100);
 
             power = 1;
-
-            lowerTC();//lowers to the cone on the cone stack
-            sleep(1000);
-
             rest();
-
-            grabing();
-            sleep(1700);
-
-            rest();
-
-            low();
-            sleep(1300);
-
-            rest();
-            sleep(100);
 
             backwards();
-            sleep(400);
+            sleep(150);
 
             rest();
             sleep(100);
+
+            rest();
+            sleep(100);
+
+            rotate(73,1);
+            sleep(1000);
+
+            straight();
+            sleep(285);
+
+            rest();
+            sleep(100);
+
+            sleft();
+            sleep(370);
+
+            rest();
+            sleep(200);
         }
         /*
          * Handle LEFT 1
@@ -346,7 +315,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < 230 && ConeSensor.blue() < 200)) {
+            while (opModeIsActive() && (ConeSensor.red() < 250 && ConeSensor.blue() < 225)) {
                 power = 0.35;//100
                 sleft();
             }
@@ -356,7 +325,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             power = 1;
 
             sright();//this only sleeps for 50ms all others are 100
-            sleep(30);
+            sleep(75);
 
             rest();
 
@@ -372,8 +341,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(100);
             power = 0.35;
 
+            rest();
+            sleep(100);
+
             sright();
-            sleep(5);
+            sleep(100);
 
             rest();
             sleep(100);
@@ -384,63 +356,20 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(150);
 
-            while (opModeIsActive() && (ConeSensor.red() < 230 && ConeSensor.blue() < 200)) {//cone stack line
-                power = 0.35;
-                straight();
-            }
             power = 1;
             rest();
-
-            straight();
-            sleep(50);
-
-            rest();
-            sleep(100);
-
-            // tright();
-            //sleep(405);
-            rotate(-72,1);
-
-
-            while (opModeIsActive() && (FCsensor.red() < 370 && FCsensor.blue() < 410)) {
-                power = 0.35;//100
-                sleft();
-            }
-
-            rest();
-            sleep(100);
-
-            power = 0.5;
-
-            sright();
-            sleep(63);
-
-            straight();
-            sleep(415);
-
-            rest();
-            sleep(100);
-
-            power = 1;
-
-            lowerTC();//lowers to the cone on the cone stack
-            sleep(1000);
-
-            rest();
-
-            grabing();
-            sleep(1700);
-
-            rest();
-
-            low();
-            sleep(1300);
-
-            rest();
-            sleep(100);
 
             backwards();
-            sleep(27);
+            sleep(70);
+
+            rest();
+            sleep(100);
+
+            rest();
+            sleep(100);
+
+            sleft();
+            sleep(360);
 
             rest();
             sleep(100);
@@ -449,10 +378,6 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
          * Handle RIGHT 3
          */
         if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
-            power = 1;
-
-            power = 1;
-
             low();
             sleep(1100);
 
@@ -471,7 +396,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < 230 && ConeSensor.blue() < 200)) {
+            while (opModeIsActive() && (ConeSensor.red() < 250 && ConeSensor.blue() < 225)) {
                 power = 0.35;//100
                 sleft();
             }
@@ -481,7 +406,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             power = 1;
 
             sright();//this only sleeps for 50ms all others are 100
-            sleep(30);
+            sleep(75);
 
             rest();
 
@@ -497,8 +422,12 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(100);
             power = 0.35;
 
+
+            rest();
+            sleep(100);
+
             sright();
-            sleep(5);
+            sleep(100);
 
             rest();
             sleep(100);
@@ -509,63 +438,27 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(150);
 
-            while (opModeIsActive() && (ConeSensor.red() < 230 && ConeSensor.blue() < 200)) {//cone stack line
-                power = 0.35;
-                straight();
-            }
-            power = 1;
-            rest();
-
-            straight();
-            sleep(50);
-
-            rest();
-            sleep(100);
-
-            // tright();
-            //sleep(405);
-            rotate(-72,1);
-
-
-            while (opModeIsActive() && (FCsensor.red() < 370 && FCsensor.blue() < 410)) {
-                power = 0.35;//100
-                sleft();
-            }
-
-            rest();
-            sleep(100);
-
-            power = 0.5;
-
-            sright();
-            sleep(63);
-
-            straight();
-            sleep(415);
-
-            rest();
-            sleep(100);
 
             power = 1;
-
-            lowerTC();//lowers to the cone on the cone stack
-            sleep(1000);
-
             rest();
-
-            grabing();
-            sleep(1700);
-
-            rest();
-
-            low();
-            sleep(1300);
-
-            rest();
-            sleep(100);
 
             backwards();
-            sleep(750);
+            sleep(150);
+
+            rest();
+            sleep(100);
+
+            rotate(73,1);
+            sleep(1000);
+
+            straight();
+            sleep(640);
+
+            rest();
+            sleep(200);
+
+            sleft();
+            sleep(360);
 
             rest();
             sleep(100);
