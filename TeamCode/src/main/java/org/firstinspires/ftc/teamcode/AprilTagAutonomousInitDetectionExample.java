@@ -201,8 +201,18 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
         waitForStart();
 
+        // SENSOR VALUES
+        //Always check the values, Values can change depending on the brightness of the room
+
+        int BlueCC = 485, RedCC = 385; //Camera color sensor
+        int BlueFC =200, RedFC = 200;//sensor on the salon door means (Front Color sensor)
+        int BlueCone = 225, RedCone = 250;//oposite to the camera color sensor
+
+        // SENSOR VALUES
+
         /* Actually do something useful */
-        if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {   power = 1;
+        if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
+            power = 1;
 
             low();
             sleep(1100);
@@ -222,7 +232,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < 250 && ConeSensor.blue() < 225)) {
+            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
                 power = 0.35;//100
                 sleft();
             }
@@ -273,9 +283,6 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            rest();
-            sleep(100);
-
             rotate(73,1);
             sleep(1000);
 
@@ -315,7 +322,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < 250 && ConeSensor.blue() < 225)) {
+            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
                 power = 0.35;//100
                 sleft();
             }
@@ -396,7 +403,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < 250 && ConeSensor.blue() < 225)) {
+            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
                 power = 0.35;//100
                 sleft();
             }
@@ -438,30 +445,37 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(150);
 
-
             power = 1;
-            rest();
 
             backwards();
-            sleep(150);
-
-            rest();
-            sleep(100);
-
-            rotate(73,1);
-            sleep(1000);
-
-            straight();
-            sleep(640);
+            sleep(180);
 
             rest();
             sleep(200);
 
-            sleft();
-            sleep(360);
+            rotate(73,1);
 
             rest();
             sleep(100);
+
+            sleft();
+            sleep(250);
+
+            rest();
+            sleep(200);
+
+            straight();
+            sleep(615);
+
+            rest();
+            sleep(300);
+
+            sleft();
+            sleep(150);
+
+            rest();//right
+            sleep(100);
+
         }
 
 
