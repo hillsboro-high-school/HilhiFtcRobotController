@@ -31,7 +31,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.util.ArrayList;
 
 @Autonomous
-public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
+public class LeftSideIMG extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -202,8 +202,6 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         waitForStart();
 
         // SENSOR VALUES
-        //Always check the values, Values can change depending on the brightness of the room
-
         int BlueCC = 485, RedCC = 385; //Camera color sensor
         int BlueFC =200, RedFC = 200;//sensor on the salon door means (Front Color sensor)
         int BlueCone = 225, RedCone = 250;//oposite to the camera color sensor
@@ -218,7 +216,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(1100);
 
             sright();
-            sleep(100);
+            sleep(110);
 
             tright();
             sleep(450);
@@ -232,67 +230,67 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
+            while (opModeIsActive() && (CCsensor.red() < BlueCC && CCsensor.blue() < RedCC)) {
                 power = 0.35;//100
-                sleft();
+                sright();
             }
 
             rest();
+            sleep(200);
 
             power = 1;
 
-            sright();//this only sleeps for 50ms all others are 100
-            sleep(75);
+            sleft();//this only sleeps for 50ms all others are 100
+            sleep(5);
 
             rest();
+            sleep(200);
 
             backwards();
-            sleep(85);
+            sleep(50);
 
             rest();
 
             straight();
-            sleep(445);
+            sleep(469);
 
             rest();
-            sleep(100);
-            power = 0.35;
 
-            rest();
-            sleep(100);
-
-            sright();
-            sleep(100);
+            tright();
+            sleep(50);
 
             rest();
             sleep(100);
 
             droping();
-            sleep(2100);
+            sleep(2100);//drops cone on the low junction
 
             rest();
-            sleep(150);
-
+            sleep(100);
 
             power = 1;
-            rest();
 
             backwards();
-            sleep(150);
+            sleep(180);
 
             rest();
             sleep(100);
 
-            rotate(73,1);
-            sleep(1000);
+            rotate(-73,1);
+
+            rest();
+            sleep(100);
+
+            power = 1;
+
 
             straight();
-            sleep(285);
+            sleep(248);
 
             rest();
             sleep(100);
 
-            sleft();
+            sright();
             sleep(370);
 
             rest();
@@ -308,7 +306,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(1100);
 
             sright();
-            sleep(100);
+            sleep(110);
 
             tright();
             sleep(450);
@@ -322,49 +320,134 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
+            while (opModeIsActive() && (CCsensor.red() < RedCC && CCsensor.blue() < BlueCC)) {
                 power = 0.35;//100
-                sleft();
+                sright();
             }
 
             rest();
 
             power = 1;
 
-            sright();//this only sleeps for 50ms all others are 100
-            sleep(75);
+            sleft();//this only sleeps for 50ms all others are 100
+            sleep(5);
 
             rest();
 
             backwards();
-            sleep(85);
+            sleep(50);
 
             rest();
 
             straight();
-            sleep(445);
+            sleep(469);
 
             rest();
-            sleep(100);
-            power = 0.35;
 
-            rest();
-            sleep(100);
-
-            sright();
-            sleep(100);
+            tright();
+            sleep(50);
 
             rest();
             sleep(100);
 
             droping();
-            sleep(2100);
+            sleep(2100);//drops cone on the low junction
 
             rest();
-            sleep(150);
+            sleep(100);
+
+            backwards();
+            sleep(180);//its the far one on this side
+
+            rest();
+            sleep(100);
+
+            rotate(-73,1);
+
+            rest();
+            sleep(100);
+
+            sright();
+            sleep(250);
 
             power = 1;
+
             rest();
+            sleep(100);
+
+            straight();
+            sleep(625);
+
+            rest();
+            sleep(300);
+
+            sright();
+            sleep(150);
+
+            rest();//left
+            sleep(100);
+
+
+
+        }
+        /*
+         * Handle RIGHT 3
+         */
+        if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
+
+            power = 1;
+
+            low();
+            sleep(1100);
+
+            sright();
+            sleep(110);
+
+            tright();
+            sleep(450);
+
+            rest();
+
+            power = 0.4;
+            backwards();
+            sleep(500);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && (CCsensor.red() < RedCC && CCsensor.blue() < BlueCC)) {
+                power = 0.35;//100
+                sright();
+            }
+
+            rest();
+            sleep(100);
+            power = 1;
+
+            sleft();//this only sleeps for 50ms all others are 100
+            sleep(5);
+
+            rest();
+            sleep(100);
+
+            backwards();
+            sleep(50);
+
+            rest();
+
+            straight();
+            sleep(458);
+
+            rest();
+
+            rest();
+            sleep(100);
+
+            droping();
+            sleep(2100);//drops cone on the low junctio
+
+            rest();
+            sleep(100);
 
             backwards();
             sleep(70);
@@ -372,110 +455,17 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             rest();
             sleep(100);
 
-            rest();
-            sleep(100);
-
-            sleft();
+            sright();
             sleep(360);
 
             rest();
-            sleep(100);
-        }
-        /*
-         * Handle RIGHT 3
-         */
-        if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
-            low();
-            sleep(1100);
-
-            sright();
-            sleep(100);
-
-            tright();
-            sleep(450);
-
-            rest();
-
-            power = 0.4;
-            backwards();
-            sleep(500);
-
-            rest();
-            sleep(100);
-
-            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
-                power = 0.35;//100
-                sleft();
-            }
-
-            rest();
-
-            power = 1;
-
-            sright();//this only sleeps for 50ms all others are 100
-            sleep(75);
-
-            rest();
-
-            backwards();
-            sleep(85);
-
-            rest();
+            sleep(100);//right
 
             straight();
-            sleep(445);
-
-            rest();
-            sleep(100);
-            power = 0.35;
-
-
-            rest();
-            sleep(100);
-
-            sright();
-            sleep(100);
-
-            rest();
-            sleep(100);
-
-            droping();
-            sleep(2100);
-
-            rest();
-            sleep(150);
-
-            power = 1;
-
-            backwards();
-            sleep(180);
-
-            rest();
             sleep(200);
 
-            rotate(73,1);
-
             rest();
             sleep(100);
-
-            sleft();
-            sleep(250);
-
-            rest();
-            sleep(200);
-
-            straight();
-            sleep(615);
-
-            rest();
-            sleep(300);
-
-            sleft();
-            sleep(150);
-
-            rest();//right
-            sleep(100);
-
         }
 
 
@@ -771,3 +761,4 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         telemetry.addData("RED Fsensor:", FCsensor.red());
     }
 }
+

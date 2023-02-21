@@ -6,6 +6,8 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,11 +25,12 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class AprilTagLeft1 extends LinearOpMode {
+public class RightSideIMG extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
+
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -50,7 +53,7 @@ public class AprilTagLeft1 extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 0.30;
+    double globalAngle, power = 1, correction;//537 is one complete rotation 258
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -58,7 +61,13 @@ public class AprilTagLeft1 extends LinearOpMode {
     private DcMotorEx rightFrontDrive = null;
     private DcMotorEx rightBackDrive = null;
     private DcMotor left_lift = null, right_lift =null;
-    private CRServo tweezers = null;
+    private Servo tweezers = null;
+    private CRServo flagS = null;
+    //private CRServo cameraC = null;
+    private ColorSensor  CCsensor;
+    private ColorSensor  FCsensor;
+    private ColorSensor  ConeSensor;
+
 
     @Override
     public void runOpMode() {
@@ -68,7 +77,12 @@ public class AprilTagLeft1 extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotorEx.class, "BottomRight");
         left_lift = hardwareMap.get(DcMotor.class, "Llift");
         right_lift = hardwareMap.get(DcMotor.class, "Rlift");
-        tweezers = hardwareMap.get(CRServo.class, "tweezers");
+        tweezers = hardwareMap.get(Servo.class, "tweezers");
+        CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
+        FCsensor = hardwareMap.get(ColorSensor.class,"fcsensor");
+        ConeSensor = hardwareMap.get(ColorSensor.class,"ConeSensor");
+        //flagS = hardwareMap.get(CRServo.class,"flagS");
+        //cameraC = hardwareMap.get(CRServo.class, "cameraC");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -180,155 +194,111 @@ public class AprilTagLeft1 extends LinearOpMode {
 
 
         waitForStart();
+
+        // SENSOR VALUES
+        //Always check the values, Values can change depending on the brightness of the room
+
+        int BlueCC = 350, RedCC = 250; //Camera color sensor (hilhi upstairs : blue = 460 and red = 340 )
+        int BlueFC =200, RedFC = 200;//sensor on the salon door means (Front Color sensor)
+        int BlueCone = 225, RedCone = 250;//oposite to the camera color sensor
+
+        // SENSOR VALUES
+
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
+            power = 1;
 
-            grabing();
-            sleep(1400);
-
-            //medium();
             high();
-            sleep(3500);
+            sleep(3600);
 
             sright();
-            sleep(150);
-
-            //power = 0.3
-            rotate(86, power);//still requires a sleep
-            sleep(400);
-
-            rest();
-
-            straight();
-            sleep(3200);//3100
-
-            rest();
-
-            sright();
-            sleep(1750);
-
-            rest();
-
-            straight();
-            sleep(430);//was 700
-
-            rest();
-            sleep (100);
-
-            tleft();//left and right are oppisite rn
-            sleep(390);
-
-            rest();
-
-            straight();
-            sleep(100);
-
-            rest();
-
-            droping();
-            sleep(1000);
-            rest();
-            sleep(150);
+            sleep(80);
 
             tright();
-            sleep(390);
+            sleep(450);
 
             rest();
+
+            power = 0.45;
+            backwards();
+            sleep(500);
+
+            rest();
+            sleep(100);
+
+            resetAngle();
+            sleep(100);
+
+            while (opModeIsActive() && (CCsensor.red() < RedCC && CCsensor.blue() < BlueCC)) {
+                power = 0.5;//100
+                sleft();
+            }// Cone sensor is the sensor on the left side of the robot just havent changed it yet
+
+            rest();
+
+            power = 1;
+
+
+            rest();
+            sleep(100);
+
+            sright();
+            sleep(195);
 
             backwards();
-            sleep(400);
+            sleep(60);
 
             rest();
-            sleep(150);
+            sleep(100);
+//.
+            power = 0.7;
 
-            sleft();
-            sleep(1500);
+            straight();
+            sleep(730);
 
             rest();
-            sleep(150);
+            sleep(100);
 
-            rotate(-84,power);
-            sleep(350);
+            droping();
+            sleep(1700);
+
+            rest();
+            sleep(100);
+
+            power = 1;
+
+            backwards();
+            sleep(5);
+
+            rest();
+            sleep(100);
+
+            sright();
+            sleep(320);
 
             rest();
             sleep(100);
 
             straight();
-            sleep(50);
+            sleep(300);
+
+            rest();
+            sleep(100);
+
+            rotate(73,1);
+            sleep(1000);
+
+            rest();
+            sleep(100);
         }
         /*
          * Handle LEFT 1
          */
         if (tagOfInterest.id == LEFT) {
+            power = 0.4;
 
-            grabing();
-            sleep(1400);
-
-            //medium();
-            high();
+            straight();
             sleep(3500);
-
-            sright();
-            sleep(150);
-
-            //power = 0.3
-            rotate(86, power);//still requires a sleep
-            sleep(400);
-
-            rest();
-
-            straight();
-            sleep(3200);//3100
-
-            rest();
-
-            sright();
-            sleep(1800);
-
-            rest();
-
-            straight();
-            sleep(430);//was 700
-
-            rest();
-            sleep (100);
-
-            tleft();//left and right are oppisite rn
-            sleep(390);
-
-            rest();
-
-            straight();
-            sleep(100);
-
-            rest();
-
-            droping();
-            sleep(1000);
-
-            rest();
-            sleep(150);
-
-            tright();
-            sleep(390);
-
-            rest();
-
-            backwards();
-            sleep(400);
-
-            rest();
-            sleep(150);
-
-            sleft();
-            sleep(1570);
-
-            rest();
-
-            backwards();
-            sleep(150);
-
-            rest();
 
 
 
@@ -337,75 +307,97 @@ public class AprilTagLeft1 extends LinearOpMode {
          * Handle RIGHT 3
          */
         if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
-            grabing();
-            sleep(1400);
-
-            //medium();
-            high();
-            sleep(3500);
+            low();
+            sleep(1100);
 
             sright();
-            sleep(150);
-
-            //power = 0.3
-            rotate(86, power);//still requires a sleep
-            sleep(400);
-
-            rest();
-
-            straight();
-            sleep(3200);//3100
-
-            rest();
-
-            sright();
-            sleep(1800);
-
-            rest();
-
-            straight();
-            sleep(430);//was 700
-
-            rest();
-            sleep (100);
-
-            tleft();//left and right are oppisite rn
-            sleep(390);
-
-            rest();
-
-            straight();
             sleep(100);
 
+            tright();
+            sleep(450);
+
             rest();
 
-            droping();
-            sleep(1000);
+            power = 0.4;
+            backwards();
+            sleep(500);
+
+            rest();
+            sleep(100);
+
+            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
+                power = 0.35;//100
+                sleft();
+            }
+
+            rest();
+
+            power = 1;
+
+            sright();//this only sleeps for 50ms all others are 100
+            sleep(75);
 
             rest();
 
             backwards();
-            sleep(250);
-
-            rest();
-
-            sleft();
-            sleep(1850);
-
-            rotate(-91, power);//still requires a sleep
-            sleep(400);
+            sleep(85);
 
             rest();
 
             straight();
-            sleep(1900);
+            sleep(445);
 
             rest();
+            sleep(100);
+            power = 0.35;
 
-            coneS();
-            sleep(3000);
 
             rest();
+            sleep(100);
+
+            sright();
+            sleep(100);
+
+            rest();
+            sleep(100);
+
+            droping();
+            sleep(2100);
+
+            rest();
+            sleep(150);
+
+            power = 1;
+
+            backwards();
+            sleep(180);
+
+            rest();
+            sleep(200);
+
+            rotate(73,1);
+
+            rest();
+            sleep(100);
+
+            sleft();
+            sleep(250);
+
+            rest();
+            sleep(200);
+
+            straight();
+            sleep(615);
+
+            rest();
+            sleep(300);
+
+            sleft();
+            sleep(150);
+
+            rest();//right
+            sleep(100);
+
         }
 
 
@@ -495,27 +487,31 @@ public class AprilTagLeft1 extends LinearOpMode {
 
 
     public void straight () {
+
+
         leftFrontDrive.setPower(power);
         rightFrontDrive.setPower(power);//goes STRAIGHT
         leftBackDrive.setPower(power);
-        rightBackDrive.setPower(power);
+        rightBackDrive.setPower(power );
         sleep(100);
     }
 
     public void backwards () {
+        correction = checkDirection();
+
         leftFrontDrive.setPower(-power);
-        rightFrontDrive.setPower(-power);//goes backwards
+        rightFrontDrive.setPower(-power );//goes backwards
         leftBackDrive.setPower(-power);
         rightBackDrive.setPower(-power);
         sleep(100);
     }
-    public void tleft () {
+    public void tright () {
         leftFrontDrive.setPower(power);
         rightFrontDrive.setPower(-power);
         leftBackDrive.setPower(power);
         rightBackDrive.setPower(-power);
     }
-    public void tright () {
+    public void tleft () {
         leftFrontDrive.setPower(-power);
         rightFrontDrive.setPower(power);
         leftBackDrive.setPower(-power);
@@ -530,13 +526,51 @@ public class AprilTagLeft1 extends LinearOpMode {
         sleep(100);
     }
     public void sleft () {
-        leftFrontDrive.setPower(-power);
+        correction = checkDirection();
+
+        // set power levels.
+        telemetry.addData("ANGLE:", getAngle());
+        telemetry.update();
+
+        leftFrontDrive.setPower(-power - correction);//correction slows it down or speeds it up
+        rightFrontDrive.setPower(power + correction);
+        leftBackDrive.setPower(power - correction);
+        rightBackDrive.setPower(-power - correction);
+        sleep(50);
+    }
+
+    public void diagLeft () {
+        leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+
+        //leftFrontDrive.setPower(power);
         rightFrontDrive.setPower(power);
         leftBackDrive.setPower(power);
-        rightBackDrive.setPower(-power);
-        sleep(100);
+        // rightBackDrive.setPower(power);
+        sleep(50);
     }
+    public void diagRight () {
+        leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        leftFrontDrive.setPower(power);
+
+        //rightFrontDrive.setPower(power);
+        //leftBackDrive.setPower(power);
+        rightBackDrive.setPower(power);
+        sleep(50);
+    }
+
+
     public void rest () {
+        leftBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);//BRAKE
+        leftFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
         leftFrontDrive.setPower(0.0);
         rightFrontDrive.setPower(0.0);
         leftBackDrive.setPower(0.0);
@@ -544,10 +578,10 @@ public class AprilTagLeft1 extends LinearOpMode {
         sleep(100);
     }
     public void grabing(){
-        tweezers.setPower(180);
+        tweezers.setPosition(0);
     }
     public void droping (){
-        tweezers.setPower(-180);
+        tweezers.setPosition(1);
     }
     public void coneS (){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -580,12 +614,64 @@ public class AprilTagLeft1 extends LinearOpMode {
         right_lift.setPower(0.8);
 
     }
+
+    public void low(){
+
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(-1200);
+        left_lift.setTargetPosition(-1200);
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+
+    public void ToHigh(){
+
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(-2400);
+        left_lift.setTargetPosition(-2400);
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(0.8);
+        right_lift.setPower(0.8);
+
+    }
+
     public void high(){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(-2823);
-        left_lift.setTargetPosition(-2823);
+        right_lift.setTargetPosition(-2840);
+        left_lift.setTargetPosition(-2840);
+
+
+        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        left_lift.setPower(1);
+        right_lift.setPower(1);
+
+    }
+
+    public  void lowerTC(){
+        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        right_lift.setTargetPosition(770);
+        left_lift.setTargetPosition(770);
 
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -596,6 +682,26 @@ public class AprilTagLeft1 extends LinearOpMode {
         right_lift.setPower(0.8);
 
     }
+    private double checkDirection()
+    {
+        // The gain value determines how sensitive the correction is to direction changes.
+        // You will have to experiment with your robot to get small smooth direction changes
+        // to stay on a straight line.
+        double correction, angle, gain = .05;
+
+        angle = getAngle();
+
+        if (angle == 0)
+            correction = 0;// no adjustment.
+
+        else
+            correction = -angle;        // reverse sign of angle for correction.
+
+        correction = correction * gain;
+
+        return correction;
+    }
+
 
 
     void tagToTelemetry (AprilTagDetection detection)
@@ -607,8 +713,13 @@ public class AprilTagLeft1 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+        telemetry.addData("BLUE Csensor:", CCsensor.blue());
+        telemetry.addData("RED Csensor:", CCsensor.red());
+        telemetry.addLine();
+        telemetry.addData("BLUE Conesensor:", ConeSensor.blue());
+        telemetry.addData("RED Conesensor:", ConeSensor.red());
+        telemetry.addLine();
+        telemetry.addData("BLUE Fsensor:", FCsensor.blue());
+        telemetry.addData("RED Fsensor:", FCsensor.red());
     }
 }
-
-
-

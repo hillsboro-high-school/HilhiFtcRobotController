@@ -36,6 +36,13 @@ import org.openftc.apriltag.AprilTagDetectorJNI;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
+//
+
+//
+//DO NOT CHANGE THIS CODE
+//
+
+//
 
 class AprilTagDetectionPipeline extends OpenCvPipeline
 {

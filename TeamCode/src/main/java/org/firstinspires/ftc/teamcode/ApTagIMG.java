@@ -67,7 +67,7 @@ public class ApTagIMG extends LinearOpMode {
     private DcMotorEx rightFrontDrive = null;
     private DcMotorEx rightBackDrive = null;
     private DcMotor left_lift = null, right_lift =null;
-    private CRServo tweezers = null;
+    private Servo tweezers = null;
     private CRServo flagS = null;
     //private CRServo cameraC = null;
     private ColorSensor  CCsensor;
@@ -83,7 +83,7 @@ public class ApTagIMG extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotorEx.class, "BottomRight");
         left_lift = hardwareMap.get(DcMotor.class, "Llift");
         right_lift = hardwareMap.get(DcMotor.class, "Rlift");
-        tweezers = hardwareMap.get(CRServo.class, "tweezers");
+        tweezers = hardwareMap.get(Servo.class, "tweezers");
         CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
         FCsensor = hardwareMap.get(ColorSensor.class,"fcsensor");
         ConeSensor = hardwareMap.get(ColorSensor.class,"ConeSensor");
@@ -636,10 +636,10 @@ public class ApTagIMG extends LinearOpMode {
         sleep(100);
     }
     public void grabing(){
-        tweezers.setPower(180);
+        tweezers.setPosition(0);
     }
     public void droping (){
-        tweezers.setPower(-180);
+        tweezers.setPosition(1);
     }
     public void coneS (){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
