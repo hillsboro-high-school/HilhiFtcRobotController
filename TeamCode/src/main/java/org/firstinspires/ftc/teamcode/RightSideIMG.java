@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -65,8 +66,8 @@ public class RightSideIMG extends LinearOpMode {
     private CRServo flagS = null;
     //private CRServo cameraC = null;
     private ColorSensor  CCsensor;
-    private ColorSensor  FCsensor;
     private ColorSensor  ConeSensor;
+    private TouchSensor touch;
 
 
     @Override
@@ -79,10 +80,8 @@ public class RightSideIMG extends LinearOpMode {
         right_lift = hardwareMap.get(DcMotor.class, "Rlift");
         tweezers = hardwareMap.get(Servo.class, "tweezers");
         CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
-        FCsensor = hardwareMap.get(ColorSensor.class,"fcsensor");
         ConeSensor = hardwareMap.get(ColorSensor.class,"ConeSensor");
-        //flagS = hardwareMap.get(CRServo.class,"flagS");
-        //cameraC = hardwareMap.get(CRServo.class, "cameraC");
+        touch = hardwareMap.get(TouchSensor.class, "touch");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -209,7 +208,7 @@ public class RightSideIMG extends LinearOpMode {
             power = 1;
 
             high();
-            sleep(3600);
+            sleep(2900);
 
             sright();
             sleep(80);
@@ -223,10 +222,9 @@ public class RightSideIMG extends LinearOpMode {
             backwards();
             sleep(500);
 
-            rest();
-            sleep(100);
-
             resetAngle();
+
+            rest();
             sleep(100);
 
             while (opModeIsActive() && (CCsensor.red() < RedCC && CCsensor.blue() < BlueCC)) {
@@ -234,27 +232,24 @@ public class RightSideIMG extends LinearOpMode {
                 sleft();
             }// Cone sensor is the sensor on the left side of the robot just havent changed it yet
 
-            rest();
-
             power = 1;
-
-
             rest();
             sleep(100);
 
             sright();
-            sleep(195);
+            sleep(120);
 
+            power = 0.7;
             backwards();
-            sleep(60);
+            sleep(100);
 
             rest();
             sleep(100);
-//.
-            power = 0.7;
 
+
+            resetAngle();
             straight();
-            sleep(730);
+            sleep(658);
 
             rest();
             sleep(100);
@@ -273,131 +268,210 @@ public class RightSideIMG extends LinearOpMode {
             rest();
             sleep(100);
 
+            power = 0.8;
+
             sright();
-            sleep(320);
+            sleep(415);
 
             rest();
-            sleep(100);
+            sleep(150);
 
+            resetAngle();
+            straight();
+            sleep(475);
+
+            rest();
+            sleep(150);
+
+            rotate(72,0.9);
+            sleep(600);
+
+            rest();
+            sleep(200);
+
+            resetAngle();
             straight();
             sleep(300);
 
             rest();
-            sleep(100);
+            sleep(200);
+/*
+            while (opModeIsActive() && (touch.isPressed() == false)){
+                power = 0.8;
+                straight();
 
-            rotate(73,1);
-            sleep(1000);
-
-            rest();
-            sleep(100);
+            }*/
+            //scores 1 and parks in middle
         }
         /*
          * Handle LEFT 1
          */
         if (tagOfInterest.id == LEFT) {
-            power = 0.4;
+            power = 1;
 
-            straight();
-            sleep(3500);
-
-
-
-        }
-        /*
-         * Handle RIGHT 3
-         */
-        if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
-            low();
-            sleep(1100);
+            high();
+            sleep(2900);
 
             sright();
-            sleep(100);
+            sleep(80);
 
             tright();
             sleep(450);
 
             rest();
 
-            power = 0.4;
+            power = 0.45;
             backwards();
             sleep(500);
 
+            resetAngle();
+
             rest();
             sleep(100);
 
-            while (opModeIsActive() && (ConeSensor.red() < RedCone && ConeSensor.blue() < BlueCone)) {
-                power = 0.35;//100
+            while (opModeIsActive() && (CCsensor.red() < RedCC && CCsensor.blue() < BlueCC)) {
+                power = 0.5;//100
                 sleft();
-            }
-
-            rest();
+            }// Cone sensor is the sensor on the left side of the robot just havent changed it yet
 
             power = 1;
-
-            sright();//this only sleeps for 50ms all others are 100
-            sleep(75);
-
-            rest();
-
-            backwards();
-            sleep(85);
-
-            rest();
-
-            straight();
-            sleep(445);
-
-            rest();
-            sleep(100);
-            power = 0.35;
-
-
             rest();
             sleep(100);
 
             sright();
+            sleep(120);
+
+            power = 0.7;
+            backwards();
             sleep(100);
+
+            rest();
+            sleep(100);
+
+
+            resetAngle();
+            straight();
+            sleep(658);
 
             rest();
             sleep(100);
 
             droping();
-            sleep(2100);
+            sleep(1700);
 
             rest();
-            sleep(150);
+            sleep(100);
 
             power = 1;
 
             backwards();
-            sleep(180);
-
-            rest();
-            sleep(200);
-
-            rotate(73,1);
+            sleep(5);
 
             rest();
             sleep(100);
 
-            sleft();
-            sleep(250);
+            power = 0.8;
+
+            sright();
+            sleep(415);
 
             rest();
-            sleep(200);
-
-            straight();
-            sleep(615);
-
-            rest();
-            sleep(300);
-
-            sleft();
             sleep(150);
 
-            rest();//right
+            resetAngle();
+            straight();
+            sleep(475);
+
+            rest();
+            sleep(150);
+
+            rotate(72,0.9);
+            sleep(600);
+
+            rest();
+            sleep(200);
+        }
+        /*
+         * Handle RIGHT 3
+         */
+        if (tagOfInterest.id == RIGHT) {//tagOfInterest.id
+            power = 1;
+
+            high();
+            sleep(2900);
+
+            sright();
+            sleep(80);
+
+            tright();
+            sleep(450);
+
+            rest();
+
+            power = 0.45;
+            backwards();
+            sleep(500);
+
+            resetAngle();
+
+            rest();
             sleep(100);
 
+            while (opModeIsActive() && (CCsensor.red() < RedCC && CCsensor.blue() < BlueCC)) {
+                power = 0.5;//100
+                sleft();
+            }// Cone sensor is the sensor on the left side of the robot just havent changed it yet
+
+            power = 1;
+            rest();
+            sleep(100);
+
+            sright();
+            sleep(120);
+
+            power = 0.7;
+            backwards();
+            sleep(100);
+
+            rest();
+            sleep(100);
+
+
+            resetAngle();
+            straight();
+            sleep(658);
+
+            rest();
+            sleep(100);
+
+            droping();
+            sleep(1700);
+
+            rest();
+            sleep(100);
+
+            power = 1;
+
+            backwards();
+            sleep(5);
+
+            rest();
+            sleep(100);
+
+            power = 1;
+
+            sright();
+            sleep(1415);
+
+            rest();
+            sleep(100);
+
+            resetAngle();
+            straight();
+            sleep(200);
+
+            rest();
+            sleep(200);
         }
 
 
@@ -487,12 +561,16 @@ public class RightSideIMG extends LinearOpMode {
 
 
     public void straight () {
+        correction = checkDirection();
 
+        // set power levels.
+        telemetry.addData("ANGLE:", getAngle());
+        telemetry.update();
 
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(power);//goes STRAIGHT
-        leftBackDrive.setPower(power);
-        rightBackDrive.setPower(power );
+        leftFrontDrive.setPower(power - correction);
+        rightFrontDrive.setPower(power + correction);//goes STRAIGHT
+        leftBackDrive.setPower(power - correction);
+        rightBackDrive.setPower(power + correction);
         sleep(100);
     }
 
@@ -519,10 +597,17 @@ public class RightSideIMG extends LinearOpMode {
         sleep(100);
     }
     public void sright () {
-        leftFrontDrive.setPower(power);
-        rightFrontDrive.setPower(-power);
-        leftBackDrive.setPower(-power);
-        rightBackDrive.setPower(power);
+        correction = checkDirection();
+
+        // set power levels.
+        telemetry.addData("ANGLE:", getAngle());
+        telemetry.update();
+
+
+        leftFrontDrive.setPower(power + correction);
+        rightFrontDrive.setPower(-power - correction);
+        leftBackDrive.setPower(-power + correction);
+        rightBackDrive.setPower(power - correction);
         sleep(100);
     }
     public void sleft () {
@@ -535,7 +620,7 @@ public class RightSideIMG extends LinearOpMode {
         leftFrontDrive.setPower(-power - correction);//correction slows it down or speeds it up
         rightFrontDrive.setPower(power + correction);
         leftBackDrive.setPower(power - correction);
-        rightBackDrive.setPower(-power - correction);
+        rightBackDrive.setPower(-power + correction);//was -
         sleep(50);
     }
 
@@ -637,15 +722,15 @@ public class RightSideIMG extends LinearOpMode {
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(-2400);
-        left_lift.setTargetPosition(-2400);
+        right_lift.setTargetPosition(-2470);
+        left_lift.setTargetPosition(-2470);
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        left_lift.setPower(0.8);
-        right_lift.setPower(0.8);
+        left_lift.setPower(1);
+        right_lift.setPower(1);
 
     }
 
@@ -653,8 +738,8 @@ public class RightSideIMG extends LinearOpMode {
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(-2840);
-        left_lift.setTargetPosition(-2840);
+        right_lift.setTargetPosition(-2870);
+        left_lift.setTargetPosition(-2870);
 
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -687,7 +772,7 @@ public class RightSideIMG extends LinearOpMode {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
         // to stay on a straight line.
-        double correction, angle, gain = .05;
+        double correction, angle, gain = .045;
 
         angle = getAngle();
 
@@ -718,8 +803,5 @@ public class RightSideIMG extends LinearOpMode {
         telemetry.addLine();
         telemetry.addData("BLUE Conesensor:", ConeSensor.blue());
         telemetry.addData("RED Conesensor:", ConeSensor.red());
-        telemetry.addLine();
-        telemetry.addData("BLUE Fsensor:", FCsensor.blue());
-        telemetry.addData("RED Fsensor:", FCsensor.red());
     }
 }
