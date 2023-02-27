@@ -6,6 +6,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -54,7 +55,7 @@ public class RightSideIMG extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = 1, correction;//537 is one complete rotation 258
+    double globalAngle, power = 1, correction, correction2;//537 is one complete rotation 258
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
@@ -67,7 +68,7 @@ public class RightSideIMG extends LinearOpMode {
     //private CRServo cameraC = null;
     private ColorSensor  CCsensor;
     private ColorSensor  ConeSensor;
-    private TouchSensor touch;
+    private DigitalChannel touch;
 
 
     @Override
@@ -81,7 +82,7 @@ public class RightSideIMG extends LinearOpMode {
         tweezers = hardwareMap.get(Servo.class, "tweezers");
         CCsensor = hardwareMap.get(ColorSensor.class,"ccsensor");
         ConeSensor = hardwareMap.get(ColorSensor.class,"ConeSensor");
-        touch = hardwareMap.get(TouchSensor.class, "touch");
+        touch = hardwareMap.get(DigitalChannel.class, "touch");
 
         leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -218,9 +219,9 @@ public class RightSideIMG extends LinearOpMode {
 
             rest();
 
-            power = 0.45;
+            power = 0.40;
             backwards();
-            sleep(500);
+            sleep(550);
 
             resetAngle();
 
@@ -237,19 +238,20 @@ public class RightSideIMG extends LinearOpMode {
             sleep(100);
 
             sright();
-            sleep(120);
+            sleep(115);
 
-            power = 0.7;
+            power = 0.45;
             backwards();
-            sleep(100);
+            sleep(150);
 
             rest();
             sleep(100);
 
+            power =0.7;
 
             resetAngle();
             straight();
-            sleep(658);
+            sleep(667);
 
             rest();
             sleep(100);
@@ -278,7 +280,7 @@ public class RightSideIMG extends LinearOpMode {
 
             resetAngle();
             straight();
-            sleep(475);
+            sleep(490);
 
             rest();
             sleep(150);
@@ -289,19 +291,76 @@ public class RightSideIMG extends LinearOpMode {
             rest();
             sleep(200);
 
-            resetAngle();
-            straight();
-            sleep(300);
-
-            rest();
-            sleep(200);
-/*
-            while (opModeIsActive() && (touch.isPressed() == false)){
-                power = 0.8;
+            while (opModeIsActive() && (touch.getState() == true)) {
+                power = 0.7;
                 straight();
 
-            }*/
-            //scores 1 and parks in middle
+            }
+
+            rest();
+            sleep(100);
+
+            rest();
+            sleep(100);
+
+            lowerTC();
+            sleep(1900);//if there is ennough time increase ticks
+
+            rest();
+            sleep(100);
+
+            grabing();
+            sleep(1000);
+
+            rest();
+            sleep(100);
+
+            low();
+            sleep(1200);
+
+            rest();
+            sleep(100);
+
+            backwards();
+            sleep(500);
+
+            rest();
+            sleep(100);
+
+            rotate(97,1);
+            sleep(350);
+
+            rest();
+            resetAngle();
+            sleep(100);
+
+            straight();
+            sleep(190);
+
+            rest();
+            sleep(100);
+
+            droping();
+            sleep(1200);
+
+            rest();
+            sleep(100);
+
+            backwards();
+            sleep(10);
+
+            rest();
+            sleep(100);
+
+            rotate(-97,1);
+            sleep(350);
+
+            rest();
+            sleep(100);
+
+
+
+
         }
         /*
          * Handle LEFT 1
@@ -339,7 +398,7 @@ public class RightSideIMG extends LinearOpMode {
             sleep(100);
 
             sright();
-            sleep(120);
+            sleep(115);
 
             power = 0.7;
             backwards();
@@ -378,6 +437,12 @@ public class RightSideIMG extends LinearOpMode {
             rest();
             sleep(150);
 
+            rotate(72,0.9);
+            sleep(600);
+
+            rest();
+            sleep(100);
+
             resetAngle();
             straight();
             sleep(475);
@@ -385,11 +450,6 @@ public class RightSideIMG extends LinearOpMode {
             rest();
             sleep(150);
 
-            rotate(72,0.9);
-            sleep(600);
-
-            rest();
-            sleep(200);
         }
         /*
          * Handle RIGHT 3
@@ -427,7 +487,7 @@ public class RightSideIMG extends LinearOpMode {
             sleep(100);
 
             sright();
-            sleep(120);
+            sleep(112);
 
             power = 0.7;
             backwards();
@@ -458,20 +518,24 @@ public class RightSideIMG extends LinearOpMode {
             rest();
             sleep(100);
 
-            power = 1;
-
-            sright();
-            sleep(1415);
+            rotate(72,0.9);
+            sleep(600);
 
             rest();
             sleep(100);
 
-            resetAngle();
-            straight();
-            sleep(200);
+            globalAngle = globalAngle - 90;
+            while (opModeIsActive() && (touch.getState() == true)) {
+                power = 0.7;
+                straight();
+
+            }
+
 
             rest();
             sleep(200);
+
+
         }
 
 
@@ -561,16 +625,16 @@ public class RightSideIMG extends LinearOpMode {
 
 
     public void straight () {
-        correction = checkDirection();
+        correction2 = checkDirection2();
 
         // set power levels.
         telemetry.addData("ANGLE:", getAngle());
         telemetry.update();
 
-        leftFrontDrive.setPower(power - correction);
-        rightFrontDrive.setPower(power + correction);//goes STRAIGHT
-        leftBackDrive.setPower(power - correction);
-        rightBackDrive.setPower(power + correction);
+        leftFrontDrive.setPower(power - correction2);
+        rightFrontDrive.setPower(power + correction2);//goes STRAIGHT
+        leftBackDrive.setPower(power - correction2);
+        rightBackDrive.setPower(power + correction2);
         sleep(100);
     }
 
@@ -604,10 +668,10 @@ public class RightSideIMG extends LinearOpMode {
         telemetry.update();
 
 
-        leftFrontDrive.setPower(power + correction);
-        rightFrontDrive.setPower(-power - correction);
-        leftBackDrive.setPower(-power + correction);
-        rightBackDrive.setPower(power - correction);
+        leftFrontDrive.setPower(power - correction);
+        rightFrontDrive.setPower(-power + correction);
+        leftBackDrive.setPower(-power - correction);
+        rightBackDrive.setPower(power + correction);
         sleep(100);
     }
     public void sleft () {
@@ -668,35 +732,21 @@ public class RightSideIMG extends LinearOpMode {
     public void droping (){
         tweezers.setPosition(1);
     }
-    public void coneS (){
-        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(2000);
-        left_lift.setTargetPosition(2000);
-
-        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        left_lift.setPower(0.8);
-        right_lift.setPower(0.8);
-
-    }
     public void medium(){
 
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(-2025);
-        left_lift.setTargetPosition(-2025);
+        right_lift.setTargetPosition(-2170);
+        left_lift.setTargetPosition(-2170);
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        left_lift.setPower(0.8);
-        right_lift.setPower(0.8);
+        left_lift.setPower(1);
+        right_lift.setPower(1);
 
     }
 
@@ -717,22 +767,6 @@ public class RightSideIMG extends LinearOpMode {
 
     }
 
-    public void ToHigh(){
-
-        right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        right_lift.setTargetPosition(-2470);
-        left_lift.setTargetPosition(-2470);
-
-        right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        left_lift.setPower(1);
-        right_lift.setPower(1);
-
-    }
 
     public void high(){
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -755,16 +789,16 @@ public class RightSideIMG extends LinearOpMode {
         right_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        right_lift.setTargetPosition(770);
-        left_lift.setTargetPosition(770);
+        right_lift.setTargetPosition(2250);
+        left_lift.setTargetPosition(2250);
 
 
         right_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        left_lift.setPower(0.8);
-        right_lift.setPower(0.8);
+        left_lift.setPower(1);
+        right_lift.setPower(1);
 
     }
     private double checkDirection()
@@ -772,7 +806,7 @@ public class RightSideIMG extends LinearOpMode {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
         // to stay on a straight line.
-        double correction, angle, gain = .045;
+        double correction, angle, gain = .04;
 
         angle = getAngle();
 
@@ -785,6 +819,26 @@ public class RightSideIMG extends LinearOpMode {
         correction = correction * gain;
 
         return correction;
+    }
+
+    private double checkDirection2()
+    {
+        // The gain value determines how sensitive the correction is to direction changes.
+        // You will have to experiment with your robot to get small smooth direction changes
+        // to stay on a straight line.
+        double correction2, angle, gain = .065;
+
+        angle = getAngle();
+
+        if (angle == 0)
+            correction2 = 0;// no adjustment.
+
+        else
+            correction2 = -angle;        // reverse sign of angle for correction.
+
+        correction2 = correction2 * gain;
+
+        return correction2;
     }
 
 
@@ -803,5 +857,8 @@ public class RightSideIMG extends LinearOpMode {
         telemetry.addLine();
         telemetry.addData("BLUE Conesensor:", ConeSensor.blue());
         telemetry.addData("RED Conesensor:", ConeSensor.red());
+        telemetry.addLine();
+        telemetry.addData("touch:", touch.getState());
+
     }
 }
